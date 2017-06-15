@@ -1,0 +1,19 @@
+{% extends 'index.html' %}
+{% block title %}Course To Major{% endblock %}
+{% block body %}
+{% include 'layout/dash.html' %}
+    <div class="col-sm-10">
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-default">Go</button>
+        </form>
+        {% if courses %}
+            <div class="row">
+                {% for course in courses.100 %}
+                    {{ course.course.code }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
