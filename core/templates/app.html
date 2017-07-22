@@ -1,0 +1,12 @@
+{% extends 'index.html' %}
+{% block title %}Portal{% endblock %}
+{% block body %}
+{% load static %}
+<div ng-app="b">
+    <div id="loaderDiv" loader>
+        <img src="{% static 'ajax-loader.gif' %}" class="ajax-loader">
+    </div>
+    <div ng-include="'/static/app/layout/dash.html'"></div>
+    <div class="col-sm-10" ui-view></div>
+</div>
+{% endblock %}

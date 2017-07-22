@@ -2,16 +2,16 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from core.models import Course, Major, Level
+from course.models import Course
+from accounts.models import Student
+from level.models import Level
+from session.models import Session
 
 # Create your models here.
 
 
-class CourseToMajor(models.Model):
+class CourseReg(models.Model):
     course = models.ForeignKey(Course)
-    major = models.ForeignKey(Major)
+    student = models.ForeignKey(Student)
     level = models.ForeignKey(Level)
-
-
-class CourseRegister(models.Model):
-    course = models.ForeignKey(Course)
+    session = models.ForeignKey(Session)

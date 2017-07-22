@@ -1,0 +1,79 @@
+<div ng-controller='CourseToMajorCtrl as vm'>
+    <div class="row">
+        <div class="col-sm-4">
+            <select class="form-control" ng-model="vm.college" ng-change="vm.getDepts(vm.college)">
+                <option value="">Select College</option>
+                <option ng-repeat="college in vm.colleges" value="[[college.name]]">[[college.acronym]]</option>
+            </select>
+        </div>
+        <div class="col-sm-4">
+            <select class="form-control" ng-model="vm.dept" ng-change="vm.getMajors(vm.dept)">
+                <option value="">Select Department</option>
+                <option ng-repeat="dept in vm.depts" value="[[dept.name]]">[[dept.name]]</option>
+            </select>
+        </div>
+        <div class="col-sm-4">
+            <select class="form-control" ng-model="vm.maj" ng-change="vm.getMajorCourses(vm.maj)">
+                <option value="">Select Major</option>
+                <option ng-repeat="major in vm.majors" value="[[major.id]]">[[major.name]]</option>
+            </select>
+        </div>
+    </div>
+    <div class="row" ng-show="vm.majorCourses">
+        <div class="row content">
+            <button class="btn btn-primary" ng-click="vm.add(vm.major.id)">Add Course to [[vm.major.name]]</button>
+        </div>
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">[[vm.major.name]] Courses</h3>
+            </div>
+            <div class="panel-body">
+                <section ng-repeat="level in vm.levels">
+                    <h3 class="text-center">[[level.level]] Level</h3>
+                    <h5>1st Semester</h5>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <th>Course Code</th>
+                                <th>Course Title</th>
+                                <th>Unit</th>
+                                <th>Type</th>
+                                <th>Actions</th>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="course in vm.majorCourses | filter:{course:{semester:1},level:level.level}">
+                                    <td>[[course.course.code]]</td>
+                                    <td>[[course.course.title]]</td>
+                                    <td>[[course.course.unit]]</td>
+                                    <td>[[course.course.type]]</td>
+                                    <td><button class="btn btn-sm btn-danger">Delete</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h5>2nd Semester</h5>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <th>Course Code</th>
+                                <th>Course Title</th>
+                                <th>Unit</th>
+                                <th>Type</th>
+                                <th>Actions</th>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="course in vm.majorCourses | filter:{course:{semester:2},level:level.level}">
+                                    <td>[[course.course.code]]</td>
+                                    <td>[[course.course.title]]</td>
+                                    <td>[[course.course.unit]]</td>
+                                    <td>[[course.course.type]]</td>
+                                    <td><button class="btn btn-sm btn-danger">Delete</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
