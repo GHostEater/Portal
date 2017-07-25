@@ -1,16 +1,22 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView
+from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView
 from rest_framework.permissions import IsAuthenticated
-from courseResultGpa.serializers import CourseResultGPASerializer
+from courseResultGpa.serializers import CourseResultGPASerializer, CourseResultCreateGPASerializer
 from courseResultGpa.models import CourseResultGPA
 
 # Create your views here.
 
 
-class CourseResultGPAAPIView(ListCreateAPIView):
+class CourseResultGPAAPIView(ListAPIView):
     serializer_class = CourseResultGPASerializer
+    permission_classes = [IsAuthenticated]
+    queryset = CourseResultGPA.objects.all()
+
+
+class CourseResultGPACreateAPIView(CreateAPIView):
+    serializer_class = CourseResultCreateGPASerializer
     permission_classes = [IsAuthenticated]
     queryset = CourseResultGPA.objects.all()
 

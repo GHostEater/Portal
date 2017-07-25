@@ -25,12 +25,12 @@ class CourseRegSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def get_course(self, obj):
-        course = Course.objects.get(pk=obj.course)
+        course = Course.objects.get(pk=obj.course.id)
         course_s = CourseSerializer(course).data
         return course_s
 
     def get_student(self, obj):
-        student = Student.objects.get(pk=obj.student)
+        student = Student.objects.get(pk=obj.student.id)
         student_s = StudentSerializer(student).data
         return student_s
 

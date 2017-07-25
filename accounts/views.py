@@ -98,7 +98,7 @@ class StudentDeptAPIView(ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Student.objects.filter(dept=self.request.GET['dept'])
+        return Student.objects.filter(major__dept=self.request.GET['dept'])
 
 
 class StudentDetailAPIView(RetrieveUpdateAPIView):

@@ -140,6 +140,7 @@ class Student(models.Model):
         ('4', 'Sick'),
         ('5', 'Suspension'),
         ('6', 'Withdrawn'),
+        ('7', 'Graduated'),
     )
     user = models.OneToOneField(User)
     phone = models.CharField(max_length=20, null=True, blank=True)

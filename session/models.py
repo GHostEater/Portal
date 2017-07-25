@@ -10,6 +10,7 @@ from django.db.models.signals import post_save
 class Session(models.Model):
     session = models.CharField(max_length=20, default='')
     is_current = models.BooleanField(default='1')
+    actions = models.BooleanField(default='0')
 
     def __str__(self):
         return str(self.session)

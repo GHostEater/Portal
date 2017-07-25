@@ -25,3 +25,9 @@ class WavedCoursesSerializer(serializers.ModelSerializer):
 
     def get_wavedBy(self, obj):
         return LecturerSerializer(Lecturer.objects.get(pk=obj.wavedBy.id)).data
+
+
+class WavedCoursesCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WavedCourses
+        fields = '__all__'

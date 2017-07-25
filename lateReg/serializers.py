@@ -25,6 +25,12 @@ class LateRegSerializer(serializers.ModelSerializer):
         return str(obj.session.session)
 
 
+class LateRegCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LateReg
+        fields = "__all__"
+
+
 class LogSerializer(serializers.ModelSerializer):
     student = serializers.SerializerMethodField()
     approvedBy = serializers.SerializerMethodField()
@@ -38,3 +44,9 @@ class LogSerializer(serializers.ModelSerializer):
 
     def get_approvedBy(self, obj):
         return UserSerializer(User.objects.get(pk=obj.approvedBy.id)).data
+
+
+class LogCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Log
+        fields = "__all__"

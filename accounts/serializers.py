@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from django.db.models import Q
 from accounts.models import User, Student, CollegeOfficer, StudentAffairs, Lecturer
 
 
@@ -105,7 +104,7 @@ class StudentAffairsSerializer(serializers.ModelSerializer):
 class LecturerSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField()
     dept = serializers.SerializerMethodField()
-    deptId = serializers.CharField(read_only=True)
+    deptId = serializers.SerializerMethodField()
     college = serializers.SerializerMethodField()
 
     class Meta:
@@ -131,7 +130,7 @@ class LecturerSerializer(serializers.ModelSerializer):
         return str(obj.dept.name)
 
     def get_deptId(self, obj):
-        return str(obj.major.dept.id)
+        return str(obj.dept.id)
 
     def get_college(self, obj):
         return str(obj.dept.college.name)
@@ -177,12 +176,6 @@ class StudentSerializer(serializers.ModelSerializer):
             'deptId',
             'college',
             'modeOfEntry'
-        ]
-        read_only_fields = [
-            'majorId',
-            'dept',
-            'deptId',
-            'college',
         ]
 
     def get_user(self, obj):

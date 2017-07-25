@@ -16,12 +16,6 @@ class CourseResultSerializer(serializers.ModelSerializer):
     session = serializers.SerializerMethodField()
 
     class Meta:
-        validators = [
-            UniqueTogetherValidator(
-                queryset=CourseResult.objects.all(),
-                fields=('student', 'course', 'session')
-            )
-        ]
         model = CourseResult
         fields = '__all__'
 
@@ -36,3 +30,15 @@ class CourseResultSerializer(serializers.ModelSerializer):
 
     def get_session(self, obj):
         return str(obj.session.session)
+
+
+class CourseResultCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        validators = [
+            UniqueTogetherValidator(
+                queryset=CourseResult.objects.all(),
+                fields=('student', 'course', 'session')
+            )
+        ]
+        model = CourseResult
+        fields = '__all__'

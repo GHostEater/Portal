@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.validators import UniqueTogetherValidator
 from courseResultGpa.models import CourseResultGPA
 from accounts.models import Student
 from accounts.serializers import StudentSerializer
@@ -25,3 +26,15 @@ class CourseResultGPASerializer(serializers.ModelSerializer):
 
     def get_deptId(self, obj):
         return str(obj.dept.id)
+
+
+class CourseResultCreateGPASerializer(serializers.ModelSerializer):
+    class Meta:
+        validators = [
+            UniqueTogetherValidator(
+                queryset=CourseResultGPA.objects.all(),
+                fields=('student', 'semester', 'session')
+            )
+        ]
+        model = CourseResultGPA
+        fields = '__all__'

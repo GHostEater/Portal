@@ -3,6 +3,7 @@ from courseResult import views
 
 urlpatterns = [
     url(r'^result/$', views.CourseResultAPIView.as_view(), name='course_result'),
+    url(r'^result/new/$', views.CourseResultCreateAPIView.as_view(), name='course_result'),
     url(r'^result/student/$', views.CourseResultStudentAPIView.as_view(), name='course_result_student'),
     url(r'^result/dept/$', views.CourseResultDeptAPIView.as_view(), name='course_result_dept'),
     url(r'^result/course/$', views.CourseResultCourseAPIView.as_view(), name='course_result_course'),
