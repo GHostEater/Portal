@@ -58,7 +58,11 @@ INSTALLED_APPS = [
     'courseResultEditRequest',
     'courseWaving',
     'systemLog',
-    'lateReg'
+    'lateReg',
+    'paymentType',
+    'paymentToMajor',
+    'payment',
+    'paymentWaving'
 ]
 
 MIDDLEWARE = [

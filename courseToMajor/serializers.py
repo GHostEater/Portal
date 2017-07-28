@@ -35,8 +35,4 @@ class CourseToMajorCreateSerializer(serializers.ModelSerializer):
             )
         ]
         model = CourseToMajor
-        fields = [
-            'course',
-            'major',
-            'level',
-        ]
+        fields = '__all__'

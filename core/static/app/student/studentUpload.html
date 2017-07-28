@@ -1,9 +1,0 @@
-<div ng-controller='StudentUploadCtrl as vm'>
-    <csv-upload ng-model="vm.students"></csv-upload>
-    <div  ng-show="vm.students">
-        <ol>
-            <li ng-repeat="student in vm.students.data | limitTo: vm.students.data.length - 1">[[student]]</li>
-        </ol>
-        <button class="btn btn-primary" ng-click="vm.uploadStudents()">Upload Students</button>
-    </div>
-</div>

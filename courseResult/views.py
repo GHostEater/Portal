@@ -34,7 +34,7 @@ class CourseResultDeptAPIView(ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return CourseResult.objects.filter(dept=self.request.GET['dept'], session=self.request.GET['session'])
+        return CourseResult.objects.filter(student__major__dept=self.request.GET['dept'], session=self.request.GET['session'])
 
 
 class CourseResultCourseAPIView(ListAPIView):

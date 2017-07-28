@@ -40,4 +40,8 @@ urlpatterns = [
     url(r'^api/', include('examOfficer.urls')),
     url(r'^api/', include('systemLog.urls')),
     url(r'^api/', include('lateReg.urls')),
+    url(r'^api/', include('payment.urls')),
+    url(r'^api/', include('paymentType.urls')),
+    url(r'^api/', include('paymentToMajor.urls')),
+    url(r'^api/', include('paymentWaving.urls')),
 ]
