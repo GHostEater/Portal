@@ -1,0 +1,27 @@
+body{
+    padding-top: 80px;
+}
+img.pull-left{
+  padding-right: 0.5em;
+}
+input.ng-touched.ng-invalid {
+  border: 2px #ff0000 solid;
+}
+#loaderDiv {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1100;
+  background-color: white;
+  opacity: 0.8;
+}
+.ajax-loader {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-left: -32px; /* -1 * image width / 2 */
+  margin-top: -32px; /* -1 * image height / 2 */
+  display: block;
+}

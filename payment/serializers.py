@@ -2,38 +2,37 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
 from payment.models import Payment
-from paymentType.models import PaymentType
-from paymentType.serializers import PaymentTypeSerializer
-from accounts.models import Student
-from accounts.serializers import StudentSerializer
 
 
 class PaymentSerializer(serializers.ModelSerializer):
-    paymentType = serializers.SerializerMethodField()
-    student = serializers.SerializerMethodField()
-    session = serializers.SerializerMethodField()
-
     class Meta:
         model = Payment
         fields = '__all__'
+        depth = 4
 
-    def get_paymentType(self, obj):
-        return PaymentTypeSerializer(PaymentType.objects.get(pk=obj.paymentType.id)).data
-
-    def get_student(self, obj):
-        return StudentSerializer(Student.objects.get(pk=obj.student.id)).data
-
-    def get_session(self, obj):
-        return str(obj.session.session)
+    @staticmethod
+    def setup_eager_loading(queryset):
+        queryset = queryset.select_related(
+            'payment_type',
+            'student',
+            'student__user',
+            'student__major',
+            'student__major__dept',
+            'student__major__dept__college',
+            'student__level',
+            'student__mode_of_entry',
+            'application',
+            'application__session',
+            'application__level',
+            'application__choice',
+            'application__choice__dept',
+            'application__choice__dept__college',
+            'session',
+        )
+        return queryset
 
 
 class PaymentCreateSerializer(serializers.ModelSerializer):
     class Meta:
-        validators = [
-            UniqueTogetherValidator(
-                queryset=Payment.objects.all(),
-                fields=('student', 'paymentType', 'session')
-            )
-        ]
         model = Payment
         fields = '__all__'

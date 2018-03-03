@@ -11,11 +11,9 @@ from college.models import College
 
 class CollegeAPIView(ListAPIView):
     serializer_class = CollegeSerializer
-    permission_classes = [IsAuthenticated]
     queryset = College.objects.all()
 
 
 class CollegeDetailAPIView(RetrieveAPIView):
     serializer_class = CollegeSerializer
-    permission_classes = [IsAuthenticated]
     queryset = College.objects.all()

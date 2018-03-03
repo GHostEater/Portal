@@ -1,25 +1,21 @@
 from rest_framework import serializers
-
-from accounts.serializers import LecturerSerializer
-from accounts.models import Lecturer
 from hod.models import Hod
 
 
 class HodSerializer(serializers.ModelSerializer):
-    lecturer = serializers.SerializerMethodField()
-    dept = serializers.SerializerMethodField()
-
     class Meta:
         model = Hod
-        fields = [
+        fields = '__all__'
+        depth = 3
+
+    @staticmethod
+    def setup_eager_loading(queryset):
+        queryset = queryset.select_related(
             'lecturer',
-            'dept'
-        ]
-
-    def get_lecturer(self, obj):
-        lecturer = Lecturer.objects.get(pk=obj.lecturer.id)
-        lecturer_s = LecturerSerializer(lecturer).data
-        return lecturer_s
-
-    def get_dept(self, obj):
-        return str(obj.dept.name)
+            'lecturer__user',
+            'lecturer__dept',
+            'lecturer__dept__college',
+            'dept',
+            'dept__college',
+        )
+        return queryset

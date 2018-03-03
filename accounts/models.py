@@ -11,10 +11,18 @@ from django.contrib.auth.validators import UnicodeUsernameValidator
 from college.models import College
 from dept.models import Dept
 from major.models import Major
-from modeOfEntry.models import ModeOfEntry
+from modeofentry.models import ModeOfEntry
 from level.models import Level
 
 # Create your models here.
+
+
+class Unit(models.Model):
+    name = models.CharField(max_length=255)
+    rank = models.IntegerField()
+
+    def __str__(self):
+        return str(self.name)
 
 
 class User(AbstractUser):
@@ -26,17 +34,55 @@ class User(AbstractUser):
         ('5', 'College Officer'),
         ('6', 'Lecturer'),
         ('7', 'Student'),
+        ('8', 'Dean'),
+        ('9', 'Non-Academic Staff'),
+        ('10', 'Voter'),
     )
     sex_choices = (
         ('Male', 'Male'),
         ('Female', 'Female'),
     )
+    genotype_choices = (
+        ('AA', 'AA'),
+        ('AS', 'AS'),
+        ('SS', 'SS'),
+        ('CS', 'CS'),
+        ('AC', 'AC'),
+    )
+    blood_group_choices = (
+        ('O+', 'O+'),
+        ('O-', 'O-'),
+        ('A+', 'A+'),
+        ('A-', 'A-'),
+        ('B+', 'B+'),
+        ('B-', 'B-'),
+        ('AB+', 'AB+'),
+        ('AB-', 'AB-'),
+    )
     username_validator = UnicodeUsernameValidator
     type = models.CharField(max_length=2, choices=type_choices, default='')
     sex = models.CharField(max_length=10, choices=sex_choices, default='')
+    date_birth = models.DateField(null=True, default='1970-01-01')
+    nationality = models.CharField(max_length=20, null=True, blank=True)
+    state_origin = models.CharField(max_length=20, null=True, blank=True)
+    lga = models.CharField(max_length=20, null=True, blank=True)
+    religion = models.CharField(max_length=20, null=True, blank=True)
+    address = models.TextField(null=True, blank=True)
+    next_kin = models.TextField(null=True, blank=True)
+    next_kin_address = models.TextField(null=True, blank=True)
+    town = models.TextField(null=True, blank=True)
+    genotype = models.CharField(max_length=5, choices=genotype_choices, null=True, blank=True)
+    blood_group = models.CharField(max_length=5, choices=blood_group_choices, null=True, blank=True)
+    phone = models.CharField(max_length=15, null=True, blank=True)
+    bio = models.TextField(null=True, blank=True)
+    cv = models.FileField(null=True, blank=True)
+    unit = models.ForeignKey(Unit, null=True, blank=True)
+    profile_rank = models.IntegerField(null=True, blank=True)
+    title = models.CharField(max_length=255, null=True, blank=True)
+    img = models.ImageField(null=True, blank=True)
 
     def __str__(self):
-        return str(self.last_name) + ", " + str(self.first_name) + " " + str(self.username)
+        return str(self.last_name) + ", " + str(self.first_name) + " " + str(self.username) + " User Type:" + str(self.type)
 
 
 @receiver(pre_save, sender='accounts.User')
@@ -97,10 +143,9 @@ class Lecturer(models.Model):
     status_choices = (
         ('Permanent', 'Permanent'),
         ('Adjunct', 'Adjunct'),
+        ('Contract', 'Contract'),
     )
     user = models.OneToOneField(User)
-    address = models.TextField(null=True, blank=True)
-    phone = models.CharField(max_length=15, null=True, blank=True)
     rank = models.CharField(max_length=20, choices=rank_choices, null=True, blank=True)
     status = models.CharField(max_length=20, choices=status_choices, null=True, blank=True)
     dept = models.ForeignKey(Dept, null=True, blank=True)
@@ -110,22 +155,6 @@ class Lecturer(models.Model):
 
 
 class Student(models.Model):
-    genotype_choices = (
-        ('AA', 'AA'),
-        ('AS', 'AS'),
-        ('SS', 'SS'),
-        ('CS', 'CS'),
-    )
-    bloodGroup_choices = (
-        ('O+', 'O+'),
-        ('O-', 'O-'),
-        ('A+', 'A+'),
-        ('A-', 'A-'),
-        ('B+', 'B+'),
-        ('B-', 'B-'),
-        ('AB+', 'AB+'),
-        ('AB-', 'AB-'),
-    )
     olevel_choices = (
         ('WAEC', 'WAEC'),
         ('NECO', 'NECO'),
@@ -139,44 +168,44 @@ class Student(models.Model):
         ('3', 'Leave'),
         ('4', 'Sick'),
         ('5', 'Suspension'),
-        ('6', 'Withdrawn'),
-        ('7', 'Graduated'),
+        ('6', 'Deferment'),
+        ('7', 'Withdrawn'),
+        ('8', 'Graduated'),
     )
     user = models.OneToOneField(User)
-    phone = models.CharField(max_length=20, null=True, blank=True)
-    dateBirth = models.DateField(null=True, default='1970-01-01')
-    nationality = models.CharField(max_length=20, null=True, blank=True)
-    stateOrigin = models.CharField(max_length=20, null=True, blank=True)
-    lga = models.CharField(max_length=20, null=True, blank=True)
-    religion = models.CharField(max_length=20, null=True, blank=True)
-    address = models.TextField(null=True, blank=True)
-    nextKin = models.TextField(null=True, blank=True)
-    nextKinAddress = models.TextField(null=True, blank=True)
-    town = models.TextField(null=True, blank=True)
-    genotype = models.CharField(max_length=5, choices=genotype_choices, null=True, blank=True)
-    bloodGroup = models.CharField(max_length=5, choices=bloodGroup_choices, null=True, blank=True)
-    parentNo = models.CharField(max_length=15, null=True, blank=True)
-    oLevel = models.CharField(max_length=15, choices=olevel_choices, null=True, blank=True)
+    parent_no = models.CharField(max_length=15, null=True, blank=True)
+    olevel = models.CharField(max_length=15, choices=olevel_choices, null=True, blank=True)
     major = models.ForeignKey(Major)
     level = models.ForeignKey(Level)
-    modeOfEntry = models.ForeignKey(ModeOfEntry)
+    mode_of_entry = models.ForeignKey(ModeOfEntry)
     status = models.CharField(max_length=15, choices=status_choices, default='1', blank=True)
-    img = models.FileField(null=True, blank=True)
+    edit = models.BooleanField(default=False)
+
+    def __str__(self):
+        return str(self.user.last_name) + ", " + str(self.user.first_name) + " " + str(self.user.username)
+
+
+class Dean(models.Model):
+    user = models.OneToOneField(User)
+    college = models.OneToOneField(College, null=True, blank=True)
 
     def __str__(self):
         return str(self.user.last_name) + ", " + str(self.user.first_name) + " " + str(self.user.username)
 
 
 def create_profile(sender, **kwargs):
-    if kwargs['instance'].type == '2':
-        acad = AcademicAffairs.objects.create(user=kwargs['instance'])
-    if kwargs['instance'].type == '3':
-        acad = Bursar.objects.create(user=kwargs['instance'])
-    if kwargs['instance'].type == '4':
-        acad = StudentAffairs.objects.create(user=kwargs['instance'])
-    if kwargs['instance'].type == '5':
-        acad = CollegeOfficer.objects.create(user=kwargs['instance'])
-    if kwargs['instance'].type == '6':
-        acad = Lecturer.objects.create(user=kwargs['instance'])
+    if kwargs['created']:
+        if kwargs['instance'].type == '2':
+            acad = AcademicAffairs.objects.create(user=kwargs['instance'])
+        if kwargs['instance'].type == '3':
+            acad = Bursar.objects.create(user=kwargs['instance'])
+        if kwargs['instance'].type == '4':
+            acad = StudentAffairs.objects.create(user=kwargs['instance'])
+        if kwargs['instance'].type == '5':
+            acad = CollegeOfficer.objects.create(user=kwargs['instance'])
+        if kwargs['instance'].type == '6':
+            acad = Lecturer.objects.create(user=kwargs['instance'])
+        if kwargs['instance'].type == '8':
+            acad = Dean.objects.create(user=kwargs['instance'])
 
 post_save.connect(create_profile, sender=User)

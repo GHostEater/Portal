@@ -3,20 +3,15 @@ from major.models import Major
 
 
 class MajorSerializer(serializers.ModelSerializer):
-    dept = serializers.SerializerMethodField()
-    college = serializers.SerializerMethodField()
-
     class Meta:
         model = Major
-        fields = [
-            'id',
-            'name',
+        fields = '__all__'
+        depth = 3
+
+    @staticmethod
+    def setup_eager_loading(queryset):
+        queryset = queryset.select_related(
             'dept',
-            'college',
-        ]
-
-    def get_dept(self, obj):
-        return str(obj.dept.name)
-
-    def get_college(self, obj):
-        return str(obj.dept.college.name)
+            'dept__college',
+        )
+        return queryset

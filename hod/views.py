@@ -12,10 +12,18 @@ from hod.models import Hod
 class HodAPIView(ListAPIView):
     serializer_class = HodSerializer
     permission_classes = [IsAuthenticated]
-    queryset = Hod.objects.all()
+
+    def get_queryset(self):
+        queryset = Hod.objects.all()
+        queryset = self.get_serializer_class().setup_eager_loading(queryset)
+        return queryset
 
 
 class HodDetailAPIView(RetrieveAPIView):
     lookup_field = 'lecturer'
     serializer_class = HodSerializer
-    queryset = Hod.objects.all()
+
+    def get_queryset(self):
+        queryset = Hod.objects.all()
+        queryset = self.get_serializer_class().setup_eager_loading(queryset)
+        return queryset

@@ -1,0 +1,18 @@
+{% extends 'index.html' %}
+
+{% block title %}Remita Payment Notifications{% endblock %}
+
+{% block body %}
+  {% for payment in payments %}
+    <div class="row">
+        <div class="col-sm-4 col-sm-offset-4 text-center">
+          <h3>{{ payment.status }}</h3>
+          <p>By: {{ payment.student.last_name }}, {{ payment.student.first_name }} {{ payment.application.last_name }}, {{ payment.application.first_name }}</p>
+          <p>Order ID: {{ payment.order_id }}</p>
+          <p>Remita Retrieval Reference: {{ payment.rrr }}</p>
+          <p>Amount: ₦{{ payment.payment_type.amount }}</p>
+          <p>For: {{ payment.payment_type.name }}</p>
+        </div>
+    </div>
+  {% endfor %}
+{% endblock %}

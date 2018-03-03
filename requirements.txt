@@ -1,0 +1,13 @@
+Django
+PyMySQL
+djangorestframework
+djangorestframework-jwt
+django-cors-headers
+django-debug-toolbar
+django-tinymce
+django-grappelli
+Pillow
+django-filebrowser
+requests
+Celery
+django-mail-queue

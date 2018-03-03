@@ -15,33 +15,55 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from django.conf import settings
+
+import debug_toolbar
+
+from django.conf.urls.static import static
+
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include('core.urls')),
+    url(r'^mail-queue/', include('mailqueue.urls')),
     url(r'^api/', include('accounts.urls')),
     url(r'^api/', include('session.urls')),
     url(r'^api/', include('semester.urls')),
     url(r'^api/', include('level.urls')),
-    url(r'^api/', include('modeOfEntry.urls')),
+    url(r'^api/', include('modeofentry.urls')),
     url(r'^api/', include('college.urls')),
     url(r'^api/', include('dept.urls')),
     url(r'^api/', include('major.urls')),
     url(r'^api/', include('course.urls')),
-    url(r'^api/', include('courseToMajor.urls')),
+    url(r'^api/', include('coursetomajor.urls')),
     url(r'^api/', include('hod.urls')),
-    url(r'^api/', include('courseAllocation.urls')),
-    url(r'^api/', include('levelAdviser.urls')),
-    url(r'^api/', include('courseReg.urls')),
-    url(r'^api/', include('courseWaving.urls')),
-    url(r'^api/', include('courseResult.urls')),
-    url(r'^api/', include('courseResultGpa.urls')),
-    url(r'^api/', include('courseResultEditRequest.urls')),
-    url(r'^api/', include('examOfficer.urls')),
-    url(r'^api/', include('systemLog.urls')),
-    url(r'^api/', include('lateReg.urls')),
+    url(r'^api/', include('courseallocation.urls')),
+    url(r'^api/', include('leveladviser.urls')),
+    url(r'^api/', include('coursereg.urls')),
+    url(r'^api/', include('coursewaving.urls')),
+    url(r'^api/', include('courseresult.urls')),
+    url(r'^api/', include('courseresultgpa.urls')),
+    url(r'^api/', include('courseresulteditrequest.urls')),
+    url(r'^api/', include('examofficer.urls')),
+    url(r'^api/', include('systemlog.urls')),
+    url(r'^api/', include('latereg.urls')),
     url(r'^api/', include('payment.urls')),
-    url(r'^api/', include('paymentType.urls')),
-    url(r'^api/', include('paymentToMajor.urls')),
-    url(r'^api/', include('paymentWaving.urls')),
-]
+    url(r'^api/', include('paymenttype.urls')),
+    url(r'^api/', include('paymenttomajor.urls')),
+    url(r'^api/', include('paymentwaving.urls')),
+    url(r'^api/', include('admission.urls')),
+    url(r'^api/', include('sitelog.urls')),
+    url(r'^api/', include('courseware.urls')),
+    url(r'^api/', include('publication.urls')),
+    url(r'^api/', include('nysc.urls')),
+    url(r'^api/', include('hostel.urls')),
+    url(r'^api/', include('room.urls')),
+    url(r'^api/', include('roomallocation.urls')),
+    url(r'^api/', include('coursereview.urls')),
+    url(r'^api/', include('voting.urls')),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if settings.DEBUG:
+    urlpatterns = [
+        url(r'^__debug__/', include(debug_toolbar.urls)),
+    ] + urlpatterns

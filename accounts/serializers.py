@@ -1,19 +1,18 @@
 from rest_framework import serializers
-from accounts.models import User, Student, CollegeOfficer, StudentAffairs, Lecturer
+from accounts.models import User, Student, CollegeOfficer, StudentAffairs, Lecturer, Dean, Unit
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = [
-            'id',
-            'username',
-            'first_name',
-            'last_name',
-            'email',
-            'type',
-            'sex',
-        ]
+        exclude = ('password',)
+        depth = 2
+
+
+class UnitSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Unit
+        fields = '__all__'
 
 
 class UserLoginSerializer(serializers.ModelSerializer):
@@ -27,16 +26,7 @@ class UserLoginSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = [
-            'id',
-            'username',
-            'password',
-            'first_name',
-            'last_name',
-            'email',
-            'type',
-            'sex',
-        ]
+        fields = '__all__'
         extra_kwargs = {'password': {'write_only': True}}
 
     def validate(self, data):
@@ -59,156 +49,85 @@ class UserLoginSerializer(serializers.ModelSerializer):
 
 
 class CollegeOfficerSerializer(serializers.ModelSerializer):
-    user = serializers.SerializerMethodField()
-    college = serializers.SerializerMethodField()
-    collegeId = serializers.CharField(read_only=True)
-
     class Meta:
         model = CollegeOfficer
-        fields = [
-            'id',
+        fields = '__all__'
+        depth = 2
+
+    @staticmethod
+    def setup_eager_loading(queryset):
+        queryset = queryset.select_related(
             'user',
             'college',
-            'collegeId',
-        ]
-
-    def get_user(self, obj):
-        user = User.objects.get(pk=obj.user.id)
-        user_s = UserSerializer(user).data
-        return user_s
-
-    def get_college(self, obj):
-        return str(obj.college.name)
-
-    def get_collegeId(self, obj):
-        return str(obj.college.id)
+        )
+        return queryset
 
 
 class StudentAffairsSerializer(serializers.ModelSerializer):
-    user = serializers.SerializerMethodField()
-
     class Meta:
         model = StudentAffairs
-        fields = [
-            'id',
-            'user',
-            'rank',
-        ]
+        fields = '__all__'
+        depth = 2
 
-    def get_user(self, obj):
-        user = User.objects.get(pk=obj.user.id)
-        user_s = UserSerializer(user).data
-        return user_s
+    @staticmethod
+    def setup_eager_loading(queryset):
+        queryset = queryset.select_related(
+            'user',
+        )
+        return queryset
 
 
 class LecturerSerializer(serializers.ModelSerializer):
-    user = serializers.SerializerMethodField()
-    dept = serializers.SerializerMethodField()
-    deptId = serializers.SerializerMethodField()
-    college = serializers.SerializerMethodField()
-
     class Meta:
         model = Lecturer
-        fields = [
-            'id',
+        fields = '__all__'
+        depth = 3
+
+    @staticmethod
+    def setup_eager_loading(queryset):
+        queryset = queryset.select_related(
             'user',
-            'address',
-            'phone',
-            'rank',
-            'status',
             'dept',
-            'deptId',
-            'college'
-        ]
-
-    def get_user(self, obj):
-        user = User.objects.get(pk=obj.user.id)
-        user_s = UserSerializer(user).data
-        return user_s
-
-    def get_dept(self, obj):
-        return str(obj.dept.name)
-
-    def get_deptId(self, obj):
-        return str(obj.dept.id)
-
-    def get_college(self, obj):
-        return str(obj.dept.college.name)
+            'dept__college',
+        )
+        return queryset
 
 
 class StudentSerializer(serializers.ModelSerializer):
-    user = serializers.SerializerMethodField()
-    major = serializers.SerializerMethodField()
-    majorId = serializers.SerializerMethodField()
-    levelId = serializers.SerializerMethodField()
-    dept = serializers.SerializerMethodField()
-    deptId = serializers.SerializerMethodField()
-    college = serializers.SerializerMethodField()
-    level = serializers.SerializerMethodField()
-    modeOfEntry = serializers.SerializerMethodField()
-
     class Meta:
         model = Student
-        fields = [
-            'id',
+        fields = '__all__'
+        depth = 3
+
+    @staticmethod
+    def setup_eager_loading(queryset):
+        queryset = queryset.select_related(
             'user',
-            'phone',
-            'dateBirth',
-            'nationality',
-            'stateOrigin',
-            'lga',
-            'religion',
-            'address',
-            'nextKin',
-            'nextKinAddress',
-            'town',
-            'genotype',
-            'bloodGroup',
-            'parentNo',
-            'oLevel',
-            'status',
-            'img',
-            'level',
-            'levelId',
             'major',
-            'majorId',
-            'dept',
-            'deptId',
-            'college',
-            'modeOfEntry'
-        ]
-
-    def get_user(self, obj):
-        user = User.objects.get(pk=obj.user.id)
-        user_s = UserSerializer(user).data
-        return user_s
-
-    def get_major(self, obj):
-        return str(obj.major.name)
-
-    def get_majorId(self, obj):
-        return str(obj.major.id)
-
-    def get_levelId(self, obj):
-        return str(obj.level.id)
-
-    def get_dept(self, obj):
-        return str(obj.major.dept.name)
-
-    def get_deptId(self, obj):
-        return str(obj.major.dept.id)
-
-    def get_college(self, obj):
-        return str(obj.major.dept.college.name)
-
-    def get_level(self, obj):
-        return str(obj.level.level)
-
-    def get_modeOfEntry(self, obj):
-        return str(obj.modeOfEntry.name)
+            'major__dept',
+            'major__dept__college',
+            'level',
+            'mode_of_entry',
+        )
+        return queryset
 
 
 class StudentCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = '__all__'
+
+
+class DeanSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Dean
+        fields = '__all__'
+        depth = 2
+
+    @staticmethod
+    def setup_eager_loading(queryset):
+        queryset = queryset.select_related(
+            'user',
+            'college',
+        )
+        return queryset

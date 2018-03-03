@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 
 from django.http import JsonResponse
-from django.contrib.auth.hashers import make_password
 
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
@@ -15,13 +14,15 @@ from accounts.serializers import (
     StudentSerializer,
     CollegeOfficerSerializer,
     StudentAffairsSerializer,
-    LecturerSerializer
+    LecturerSerializer,
+    DeanSerializer,
+    UnitSerializer
 )
-from accounts.models import Student, User, CollegeOfficer, StudentAffairs, Lecturer
-from courseResultGpa.models import CourseResultGPA
-from systemLog.models import Log
+from accounts.models import Student, User, CollegeOfficer, StudentAffairs, Lecturer, Dean, Unit
+from courseresultgpa.models import CourseResultGPA
+from systemlog.models import Log
 from level.models import Level
-from modeOfEntry.models import ModeOfEntry
+from modeofentry.models import ModeOfEntry
 from major.models import Major
 import json
 from django.views.decorators.csrf import csrf_exempt
@@ -49,40 +50,109 @@ class UserLoginAPIView(APIView):
         return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
 
 
+class UserAPIView(ListAPIView):
+    serializer_class = UserSerializer
+
+    def get_queryset(self):
+        queryset = User.objects.all().exclude(type='7').exclude(type='1')
+        return queryset
+
+
+class UserDetailAPIView(RetrieveUpdateAPIView):
+    serializer_class = UserSerializer
+
+    def get_queryset(self):
+        queryset = User.objects.all()
+        return queryset
+
+
+class UnitAPIView(ListAPIView):
+    serializer_class = UnitSerializer
+
+    def get_queryset(self):
+        queryset = Unit.objects.all()
+        return queryset
+
+
+class UnitDetailAPIView(RetrieveUpdateAPIView):
+    serializer_class = UnitSerializer
+
+    def get_queryset(self):
+        queryset = Unit.objects.all()
+        return queryset
+
+
 class CollegeOfficerAPIView(ListAPIView):
     serializer_class = CollegeOfficerSerializer
-    permission_classes = [IsAuthenticated]
-    queryset = CollegeOfficer.objects.all()
+
+    def get_queryset(self):
+        queryset = CollegeOfficer.objects.all()
+        queryset = self.get_serializer_class().setup_eager_loading(queryset)
+        return queryset
 
 
 class CollegeOfficerDetailAPIView(RetrieveUpdateAPIView):
     serializer_class = CollegeOfficerSerializer
     lookup_field = 'user'
-    queryset = CollegeOfficer.objects.all()
+
+    def get_queryset(self):
+        queryset = CollegeOfficer.objects.all()
+        queryset = self.get_serializer_class().setup_eager_loading(queryset)
+        return queryset
 
 
 class StudentAffairsAPIView(ListAPIView):
     serializer_class = StudentAffairsSerializer
     permission_classes = [IsAuthenticated]
-    queryset = StudentAffairs.objects.all()
+
+    def get_queryset(self):
+        queryset = StudentAffairs.objects.all()
+        queryset = self.get_serializer_class().setup_eager_loading(queryset)
+        return queryset
 
 
 class StudentAffairsDetailAPIView(RetrieveUpdateAPIView):
     serializer_class = StudentAffairsSerializer
     lookup_field = 'user'
-    queryset = StudentAffairs.objects.all()
+
+    def get_queryset(self):
+        queryset = StudentAffairs.objects.all()
+        queryset = self.get_serializer_class().setup_eager_loading(queryset)
+        return queryset
 
 
 class LecturerAPIView(ListAPIView):
     serializer_class = LecturerSerializer
-    permission_classes = [IsAuthenticated]
-    queryset = Lecturer.objects.all()
+
+    def get_queryset(self):
+        queryset = Lecturer.objects.all()
+        queryset = self.get_serializer_class().setup_eager_loading(queryset)
+        return queryset
 
 
 class LecturerDetailAPIView(RetrieveUpdateAPIView):
     serializer_class = LecturerSerializer
     lookup_field = 'user'
-    queryset = Lecturer.objects.all()
+
+    def get_queryset(self):
+        queryset = Lecturer.objects.all()
+        queryset = self.get_serializer_class().setup_eager_loading(queryset)
+        return queryset
+
+
+class DeanAPIView(ListAPIView):
+    serializer_class = DeanSerializer
+    queryset = Dean.objects.all()
+
+
+class DeanDetailAPIView(RetrieveUpdateAPIView):
+    serializer_class = DeanSerializer
+    lookup_field = 'user'
+
+    def get_queryset(self):
+        queryset = Dean.objects.all()
+        queryset = self.get_serializer_class().setup_eager_loading(queryset)
+        return queryset
 
 
 class StudentAPIView(ListAPIView):
@@ -90,7 +160,9 @@ class StudentAPIView(ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Student.objects.all()
+        queryset = Student.objects.all()
+        queryset = self.get_serializer_class().setup_eager_loading(queryset)
+        return queryset
 
 
 class StudentDeptAPIView(ListAPIView):
@@ -98,13 +170,19 @@ class StudentDeptAPIView(ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Student.objects.filter(major__dept=self.request.GET['dept'])
+        queryset = Student.objects.filter(major__dept=self.request.GET['dept'])
+        queryset = self.get_serializer_class().setup_eager_loading(queryset)
+        return queryset
 
 
 class StudentDetailAPIView(RetrieveUpdateAPIView):
     serializer_class = StudentSerializer
     lookup_field = 'user'
-    queryset = Student.objects.all()
+
+    def get_queryset(self):
+        queryset = Student.objects.all()
+        queryset = self.get_serializer_class().setup_eager_loading(queryset)
+        return queryset
 
 
 @csrf_exempt
@@ -114,26 +192,26 @@ def student_create(request):
 
     major = Major.objects.get(name=body['major'])
     level = Level.objects.get(level=body['level'])
-    modeOfEntry = ModeOfEntry.objects.get(name=body['modeOfEntry'])
-    dateBirth = body['dateBirth']
+    mode_of_entry = ModeOfEntry.objects.get(name=body['mode_of_entry'])
+    date_birth = body['date_birth']
 
     user = User()
     user.username = body['username']
-    user.password = dateBirth
+    user.password = date_birth
     user.first_name = body['first_name']
     user.last_name = body['last_name']
     user.email = body['email']
     user.type = '7'
     user.sex = body['sex']
+    user.date_birth = date_birth
     user.save()
 
     student = Student()
     student.user = user
     student.major = major
     student.level = level
-    student.modeOfEntry = modeOfEntry
+    student.mode_of_entry = mode_of_entry
     student.status = '1'
-    student.dateBirth = dateBirth
     student.save()
 
     serial = StudentSerializer(student)
@@ -152,7 +230,7 @@ def student_auto_withdraw(request):
                 count += 1
             if count == 4:
                 std = Student.objects.get(pk=student.id)
-                std.status = 6
+                std.status = '7'
                 std.save()
                 log = Log()
                 log.action = "Withdraw Student " + std.user.username
@@ -162,6 +240,6 @@ def student_auto_withdraw(request):
                 log.location = "System"
                 log.save()
             i += 1
-            if i == 3:
+            if i == 2:
                 continue
-        return JsonResponse({}, safe=False, status=200)
+    return JsonResponse({}, safe=False, status=200)

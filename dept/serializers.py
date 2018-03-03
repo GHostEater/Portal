@@ -3,15 +3,14 @@ from dept.models import Dept
 
 
 class DeptSerializer(serializers.ModelSerializer):
-    college = serializers.SerializerMethodField()
-
     class Meta:
         model = Dept
-        fields = [
-            'id',
-            'name',
-            'college',
-        ]
+        fields = '__all__'
+        depth = 3
 
-    def get_college(self, obj):
-        return str(obj.college.name)
+    @staticmethod
+    def setup_eager_loading(queryset):
+        queryset = queryset.select_related(
+            'college',
+        )
+        return queryset

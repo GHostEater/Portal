@@ -10,10 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
-import os, datetime
+import os
+import datetime
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
@@ -37,32 +39,44 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
+    'debug_toolbar',
+    'mailqueue',
     'accounts',
     'college',
     'core',
     'course',
-    'courseAllocation',
-    'courseReg',
-    'courseToMajor',
+    'courseallocation',
+    'coursereg',
+    'coursetomajor',
     'dept',
     'level',
     'major',
-    'modeOfEntry',
+    'modeofentry',
     'semester',
     'session',
     'hod',
-    'levelAdviser',
-    'examOfficer',
-    'courseResult',
-    'courseResultGpa',
-    'courseResultEditRequest',
-    'courseWaving',
-    'systemLog',
-    'lateReg',
-    'paymentType',
-    'paymentToMajor',
+    'leveladviser',
+    'examofficer',
+    'courseresult',
+    'courseresultgpa',
+    'courseresulteditrequest',
+    'coursewaving',
+    'systemlog',
+    'latereg',
+    'paymenttype',
+    'paymenttomajor',
     'payment',
-    'paymentWaving'
+    'paymentwaving',
+    'admission',
+    'sitelog',
+    'courseware',
+    'publication',
+    'nysc',
+    'hostel',
+    'room',
+    'roomallocation',
+    'coursereview',
+    'voting',
 ]
 
 MIDDLEWARE = [
@@ -74,6 +88,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
@@ -119,6 +134,7 @@ DATABASES = {
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 
 AUTH_USER_MODEL = 'accounts.User'
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -152,6 +168,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static_media/')
+
 LOGIN_REDIRECT_URL = '/admin'
 
 LOGIN_URL = '/'
@@ -168,3 +186,17 @@ JWT_AUTH = {
     'JWT_EXPIRATION_DELTA': datetime.timedelta(days=3),
     'JWT_REFRESH_EXPIRATION_DELTA': datetime.timedelta(days=7),
 }
+
+INTERNAL_IPS = [
+    '127.0.0.1'
+]
+
+MEDIA_ROOT = os.path.join(PROJECT_ROOT, 'media')
+MEDIA_URL = '/media/'
+
+MAILQUEUE_QUEUE_UP = True
+
+EMAIL_HOST = 'smtp.mailgun.org'
+EMAIL_PORT = '587'
+EMAIL_HOST_USER = 'postmaster@mg.fuo.edu.ng'
+EMAIL_HOST_PASSWORD = '2cfbdb15d400844e5a6cba9d6b1cfb86'

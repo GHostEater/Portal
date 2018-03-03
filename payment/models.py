@@ -3,7 +3,8 @@ from __future__ import unicode_literals
 
 from django.db import models
 
-from paymentType.models import PaymentType
+from admission.models import Application
+from paymenttype.models import PaymentType
 from accounts.models import Student
 from session.models import Session
 
@@ -11,9 +12,23 @@ from session.models import Session
 
 
 class Payment(models.Model):
-    paymentType = models.ForeignKey(PaymentType)
-    student = models.ForeignKey(Student)
-    session = models.ForeignKey(Session)
-    rrr = models.CharField(max_length=500)
+    type_choices = (
+        ("Web", "Web"),
+        ("eCashier", "eCashier"),
+    )
+
+    payment_type = models.ForeignKey(PaymentType)
+    type = models.CharField(max_length=256, choices=type_choices, default="Web")
+    student = models.ForeignKey(Student, null=True, blank=True)
+    application = models.ForeignKey(Application, null=True, blank=True)
+    session = models.ForeignKey(Session, null=True, blank=True)
+    transaction_id = models.CharField(max_length=256, null=True, blank=True)
+    prn = models.TextField(null=True, blank=True)
     date = models.DateTimeField(null=True, blank=True)
-    status = models.IntegerField(default=0)
+    status = models.TextField(null=True, blank=True)
+    paid = models.BooleanField(default=False)
+
+    def __str__(self):
+        return str(str(self.student)+" "+str(self.application)+" "+str(self.payment_type)+" Type:"+str(self.type)
+                   + " PRN:"+str(self.prn)+" Paid: "+str(self.paid)+", Status:"+str(self.status)
+                   + ", Date:"+str(self.date))

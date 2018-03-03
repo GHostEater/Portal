@@ -13,6 +13,7 @@ class Course(models.Model):
     type_choices = (
         ('Compulsory', 'Compulsory'),
         ('Elective', 'Elective'),
+        ('Required', 'Required'),
     )
     semester_choices = (
         (1, '1st Semester'),

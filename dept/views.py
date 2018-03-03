@@ -11,11 +11,17 @@ from dept.models import Dept
 
 class DeptAPIView(ListAPIView):
     serializer_class = DeptSerializer
-    permission_classes = [IsAuthenticated]
-    queryset = Dept.objects.all()
+
+    def get_queryset(self):
+        queryset = Dept.objects.all()
+        queryset = self.get_serializer_class().setup_eager_loading(queryset)
+        return queryset
 
 
 class DeptDetailAPIView(RetrieveAPIView):
     serializer_class = DeptSerializer
-    permission_classes = [IsAuthenticated]
-    queryset = Dept.objects.all()
+
+    def get_queryset(self):
+        queryset = Dept.objects.all()
+        queryset = self.get_serializer_class().setup_eager_loading(queryset)
+        return queryset

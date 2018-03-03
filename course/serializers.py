@@ -3,15 +3,16 @@ from course.models import Course
 
 
 class CourseSerializer(serializers.ModelSerializer):
-    level = serializers.SerializerMethodField()
-    dept = serializers.SerializerMethodField()
-
     class Meta:
         model = Course
         fields = '__all__'
+        depth = 3
 
-    def get_level(self, obj):
-        return str(obj.level.level)
-
-    def get_dept(self, obj):
-        return str(obj.dept.name)
+    @staticmethod
+    def setup_eager_loading(queryset):
+        queryset = queryset.select_related(
+            'dept',
+            'dept__college',
+            'level',
+        )
+        return queryset
