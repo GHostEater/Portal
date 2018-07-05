@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
-from courseresult.models import CourseResult
+from courseresult.models import CourseResult, ReleaseStatus
 
 
 class CourseResultSerializer(serializers.ModelSerializer):
@@ -40,4 +40,10 @@ class CourseResultCreateSerializer(serializers.ModelSerializer):
             )
         ]
         model = CourseResult
+        fields = '__all__'
+
+
+class ReleaseStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ReleaseStatus
         fields = '__all__'

@@ -88,7 +88,6 @@ def remita_response(request):
         payment.paid = False
         payment.save()
     payment.payment_type.amount += 350
-    print data
 
     return render(request, 'remita.html', context={'payment': payment})
 

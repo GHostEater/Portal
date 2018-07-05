@@ -18,7 +18,7 @@ urlpatterns = [
     url(r'^student/$', views.StudentAPIView.as_view(), name='student'),
     url(r'^student/dept/$', views.StudentDeptAPIView.as_view(), name='student_dept'),
     url(r'^student/(?P<user>[0-9]+)/$', views.StudentDetailAPIView.as_view(), name='student_detail'),
-    url(r'^student/new/$', views.student_create, name='student_create'),
+    url(r'^student/new/$', views.student_upload, name='student_create'),
     url(r'^student/auto-withdraw/$', views.student_auto_withdraw, name='student_auto_withdraw'),
 
     url(r'^college-officer/$', views.CollegeOfficerAPIView.as_view(), name='college_officer'),

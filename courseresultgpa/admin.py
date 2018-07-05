@@ -6,4 +6,7 @@ from django.contrib import admin
 from courseresultgpa.models import CourseResultGPA
 
 # Register your models here.
-admin.site.register(CourseResultGPA)
+class CourseResultGPAAdmin(admin.ModelAdmin):
+    list_display = ('student', 'tcp', 'tnu', 'gpa', 'ctcp', 'ctnu', 'cgpa', 'tce', 'status', 'rel', 'session', 'semester')
+
+admin.site.register(CourseResultGPA, CourseResultGPAAdmin)

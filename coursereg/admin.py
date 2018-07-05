@@ -6,4 +6,7 @@ from coursereg.models import CourseReg
 
 # Register your models here.
 
-admin.site.register(CourseReg)
+class CourseRegAdmin(admin.ModelAdmin):
+    list_display = ("student", "course", "session", "level")
+
+admin.site.register(CourseReg, CourseRegAdmin)

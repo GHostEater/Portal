@@ -6,4 +6,9 @@ from django.contrib import admin
 from session.models import Session
 
 # Register your models here.
-admin.site.register(Session)
+
+
+class SessionAdmin(admin.ModelAdmin):
+    list_display = ("session", "is_current", "is_admission", "actions")
+    
+admin.site.register(Session, SessionAdmin)

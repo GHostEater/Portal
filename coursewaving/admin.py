@@ -5,4 +5,9 @@ from django.contrib import admin
 from coursewaving.models import WavedCourses
 
 # Register your models here.
-admin.site.register(WavedCourses)
+
+
+class WavedCoursesAdmin(admin.ModelAdmin):
+    list_display = ("student", "course", 'waved_by')
+
+admin.site.register(WavedCourses, WavedCoursesAdmin)

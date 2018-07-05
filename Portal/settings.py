@@ -199,4 +199,4 @@ MAILQUEUE_QUEUE_UP = True
 EMAIL_HOST = 'smtp.mailgun.org'
 EMAIL_PORT = '587'
 EMAIL_HOST_USER = 'postmaster@mg.fuo.edu.ng'
-EMAIL_HOST_PASSWORD = '2cfbdb15d400844e5a6cba9d6b1cfb86'
+EMAIL_HOST_PASSWORD = ''

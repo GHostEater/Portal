@@ -12,6 +12,8 @@ from session.models import Session
 
 
 class CourseResult(models.Model):
+    class Meta:
+        unique_together = ('course', 'student', 'session')
     course = models.ForeignKey(Course)
     student = models.ForeignKey(Student)
     dept = models.ForeignKey(Dept)
@@ -23,3 +25,7 @@ class CourseResult(models.Model):
     rel = models.BooleanField(default=0)
     session = models.ForeignKey(Session)
     status = models.IntegerField(default=0)
+
+
+class ReleaseStatus(models.Model):
+    status = models.BooleanField(default=False)

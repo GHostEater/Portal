@@ -14,6 +14,9 @@ class PaymentType(models.Model):
     api_key = models.CharField(max_length=256, null=True, blank=True)
     public_key = models.CharField(max_length=256, null=True, blank=True)
     private_key = models.CharField(max_length=256, null=True, blank=True)
+    code = models.CharField(max_length=256, null=True, blank=True)
+    admission = models.BooleanField(default=False)
+    incur_charges = models.BooleanField(default=True)
 
     def __str__(self):
         return str(self.name+" "+str(self.amount))

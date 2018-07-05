@@ -10,6 +10,8 @@ from accounts.models import Student, Lecturer
 
 
 class WavedCourses(models.Model):
+    class Meta:
+        unique_together = ('course', 'student')
     course = models.ForeignKey(Course)
     student = models.ForeignKey(Student)
     waved_by = models.ForeignKey(Lecturer)

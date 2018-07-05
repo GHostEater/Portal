@@ -10,6 +10,9 @@ from dept.models import Dept
 
 
 class CourseResultGPA(models.Model):
+    class Meta:
+        unique_together = ('student', 'session', 'semester')
+
     student = models.ForeignKey(Student)
     session = models.ForeignKey(Session)
     dept = models.ForeignKey(Dept)

@@ -1,13 +1,17 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.http import JsonResponse
+import datetime
 
+from django.db import IntegrityError
+from django.http import JsonResponse
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from rest_framework.views import APIView
 from rest_framework.generics import ListAPIView, RetrieveUpdateAPIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
+
 from accounts.serializers import (
     UserSerializer,
     UserLoginSerializer,
@@ -24,9 +28,6 @@ from systemlog.models import Log
 from level.models import Level
 from modeofentry.models import ModeOfEntry
 from major.models import Major
-import json
-from django.views.decorators.csrf import csrf_exempt
-import datetime
 
 # Create your views here.
 
@@ -40,7 +41,8 @@ def current_user(request):
 class UserLoginAPIView(APIView):
     serializer_class = UserLoginSerializer
 
-    def post(self, request, *args, **kwargs):
+    @staticmethod
+    def post(request, *args, **kwargs):
         data = request.data
         serializer = UserLoginSerializer(data=data)
 
@@ -185,40 +187,50 @@ class StudentDetailAPIView(RetrieveUpdateAPIView):
         return queryset
 
 
-@csrf_exempt
-def student_create(request):
-    body_unicode = request.body.decode('utf-8')
-    body = json.loads(body_unicode)
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def student_upload(request):
+    data = request.data
+    processed = 0
 
-    major = Major.objects.get(name=body['major'])
-    level = Level.objects.get(level=body['level'])
-    mode_of_entry = ModeOfEntry.objects.get(name=body['mode_of_entry'])
-    date_birth = body['date_birth']
+    for i, body in enumerate(data):
+        major = Major.objects.get(name=body['major'])
+        level = Level.objects.get(level=body['level'])
+        mode_of_entry = ModeOfEntry.objects.get(name=body['mode_of_entry'])
+        date_birth = body['date_birth']
 
-    user = User()
-    user.username = body['username']
-    user.password = date_birth
-    user.first_name = body['first_name']
-    user.last_name = body['last_name']
-    user.email = body['email']
-    user.type = '7'
-    user.sex = body['sex']
-    user.date_birth = date_birth
-    user.save()
+        user = User()
+        user.username = body['username']
+        user.password = date_birth
+        user.first_name = body['first_name']
+        user.last_name = body['last_name']
+        user.email = body['email']
+        user.type = '7'
+        user.sex = body['sex']
+        user.date_birth = date_birth
+        try:
+            user.save()
+        except IntegrityError:
+            user = User.objects.get(username=body['username'])
 
-    student = Student()
-    student.user = user
-    student.major = major
-    student.level = level
-    student.mode_of_entry = mode_of_entry
-    student.status = '1'
-    student.save()
+        student = Student()
+        student.user = user
+        student.major = major
+        student.level = level
+        student.mode_of_entry = mode_of_entry
+        student.status = '1'
+        student.parent_email = body['parent_email']
+        try:
+            student.save()
+            processed = i
+        except IntegrityError:
+            student = ''
 
-    serial = StudentSerializer(student)
-    return JsonResponse(serial.data, safe=False, status=200)
+    return Response({'processed': processed})
 
 
-@csrf_exempt
+@api_view(['GET'])
+@permission_classes([AllowAny])
 def student_auto_withdraw(request):
     students = Student.objects.filter(status='1')
     for student in students:
@@ -226,7 +238,7 @@ def student_auto_withdraw(request):
         count = 0
         i = 0
         for gp in gps:
-            if float(gp.cgpa) < 1.5:
+            if float(gp.cgpa) < 1.00:
                 count += 1
             if count == 4:
                 std = Student.objects.get(pk=student.id)
@@ -242,4 +254,4 @@ def student_auto_withdraw(request):
             i += 1
             if i == 2:
                 continue
-    return JsonResponse({}, safe=False, status=200)
+    return Response({})

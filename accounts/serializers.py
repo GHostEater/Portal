@@ -5,7 +5,7 @@ from accounts.models import User, Student, CollegeOfficer, StudentAffairs, Lectu
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        exclude = ('password',)
+        fields = '__all__'
         depth = 2
 
 

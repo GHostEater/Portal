@@ -11,6 +11,8 @@ from session.models import Session
 
 
 class CourseReg(models.Model):
+    class Meta:
+        unique_together = ("course", "student", "session")
     course = models.ForeignKey(Course)
     student = models.ForeignKey(Student)
     level = models.ForeignKey(Level)
