@@ -4,47 +4,103 @@ from __future__ import unicode_literals
 import hashlib
 import json
 
-from django.shortcuts import render
-
 import requests
-from django.core.exceptions import ObjectDoesNotExist
-from django.http import JsonResponse, HttpResponse
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView, ListAPIView
+from django.db import IntegrityError
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
-from payment.serializers import PaymentSerializer, PaymentCreateSerializer
 from payment.models import Payment
 
 
-@csrf_exempt
+@api_view(['POST'])
 def remita_notification(request):
-    remita_status = "http://www.remitademo.net/remita/ecomm"
-    body_unicode = request.body.decode('utf-8')
-    data = json.loads(body_unicode)
+    remita_status = "https://login.remita.net/remita/ecomm"
+    data = request.data
     payments = []
+    if isinstance(data, list):
+        p = len(data)
+        pr = 0
+        fail = 0
 
-    for d in data:
-        payment = Payment.objects.filter(order_id=d['orderRef']).first()
-        rrr = d['rrr']
+        for d in data:
+            payment = Payment.objects.get(order_id=d['orderRef'])
+            rrr = d['rrr']
+            payment.rrr = rrr
+            payment.save()
+
+            hsh = hashlib.sha512()
+            hsh.update(payment.rrr+payment.payment_type.api_key+payment.payment_type.merchant_id)
+            hsh_dig = hsh.hexdigest()
+
+            r = requests.get(
+                remita_status+"/"+payment.payment_type.merchant_id+"/"+payment.rrr+"/"+hsh_dig+"/status.reg")
+            dat = json.loads(r.text)
+            if (dat['status'] == '00') or (dat['status'] == '01'):
+                payment.paid = True
+                payment.status = dat['message']
+                try:
+                    payment.save()
+                    pr += 1
+                except IntegrityError:
+                    fail += 1
+            else:
+                payment.status = dat['message']
+                payment.paid = False
+                try:
+                    payment.save()
+                    pr += 1
+                except IntegrityError:
+                    fail += 1
+            payment.payment_type.amount += 350
+            payments.append(payment)
+        serial = {
+            'payments_sent': p,
+            'payments_processed_success': pr,
+            'payments_processed_fail': fail
+        }
+
+        return Response(serial)
+
+    else:
+        p = 1
+        pr = 0
+        fail = 0
+
+        payment = Payment.objects.get(order_id=data['orderRef'])
+        rrr = data['rrr']
         payment.rrr = rrr
         payment.save()
 
         hsh = hashlib.sha512()
-        hsh.update(payment.rrr+payment.payment_type.api_key+payment.payment_type.merchant_id)
+        hsh.update(payment.rrr + payment.payment_type.api_key + payment.payment_type.merchant_id)
         hsh_dig = hsh.hexdigest()
 
-        r = requests.get(remita_status+"/"+payment.payment_type.merchant_id+"/"+payment.rrr+"/"+hsh_dig+"/status.reg")
+        r = requests.get(
+            remita_status + "/" + payment.payment_type.merchant_id + "/" + payment.rrr + "/" + hsh_dig + "/status.reg")
         dat = json.loads(r.text)
         if (dat['status'] == '00') or (dat['status'] == '01'):
             payment.paid = True
             payment.status = dat['message']
-            payment.save()
+            payment.amount = dat['amount']
+            try:
+                payment.save()
+                pr += 1
+            except IntegrityError:
+                fail += 1
         else:
             payment.status = dat['message']
+            payment.amount = dat['amount']
             payment.paid = False
-            payment.save()
-        payment.payment_type.amount += 350
+            try:
+                payment.save()
+                pr += 1
+            except IntegrityError:
+                fail += 1
         payments.append(payment)
-    serial = 'ok'
+    serial = {
+        'payments_sent': p,
+        'payments_processed_success': pr,
+        'payments_processed_fail': fail
+    }
 
-    return HttpResponse(serial)
+    return Response(serial)

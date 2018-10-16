@@ -6,18 +6,21 @@ import json
 
 import requests
 from django.shortcuts import render
+from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
 from payment.models import Payment
 
 
 @csrf_exempt
-def remita_response(request):
-    remita_status = "http://www.remitademo.net/remita/ecomm"
+def remita_rrrgen_response(request):
+    remita_status = "https://login.remita.net/remita/ecomm"
+    remita_pay = "https://login.remita.net/remita/ecomm/finalize.reg"
+    final_response = request.build_absolute_uri(reverse('final_response'))
     rrr = request.GET['RRR']
     order_id = request.GET['orderID']
 
-    payment = Payment.objects.find(order_id=order_id)
+    payment = Payment.objects.get(order_id=order_id)
     payment.rrr = rrr
     payment.status = ''
     payment.save()
@@ -35,11 +38,19 @@ def remita_response(request):
     if (data['status'] == '00') or (data['status'] == '01'):
         payment.paid = True
         payment.status = status
+        payment.amount = data['amount']
         payment.save()
     else:
         payment.status = status
         payment.paid = False
+        payment.amount = data['amount']
         payment.save()
-    payment.payment_type.amount += 350
 
-    return render(request, 'remita.html', context={'payment': payment})
+    hsh = hashlib.sha512()
+    hsh.update(payment.payment_type.merchant_id+payment.rrr+payment.payment_type.api_key)
+    payment.hash = hsh.hexdigest()
+
+    payment.remita_pay = remita_pay
+    payment.final_response = final_response
+
+    return render(request, 'remita_rrr.html', context={'payment': payment})

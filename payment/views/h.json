@@ -1,0 +1,35 @@
+url = https://login.remita.net/remita/exapp/api/v1/send/api/echannelsvc/merchant/api/paymentinit
+
+header = Authorization: remitaConsumerKey=3226667099,remitaConsumerToken=0d1430751ba3964db1c6e3dc33cee6c48c6c952b82eba186b147292dafe1eb1b7f8c4b4d85504389d58d2e01313e5f25043c17b11f5cb95472cef7e405294e96
+
+payload = {
+    "orderId": "FUO-HHEPSNY1F3EQX",
+    "amount": "1000",
+    "payerEmail": "lasisi28@gmail.com",
+    "description": "Portal Access Fee",
+    "payerPhone": "07037286040", 
+    "payerName": "Lasisi Olufemi Paul",
+    "serviceTypeId": "3225990167",
+    "customFields": [
+        {
+            "type": "ALL", 
+            "name": "Matric No", 
+            "value": "NAS/12048"
+        },
+        {
+            "type": "ALL", 
+            "name": "Department", 
+            "value": "Mathematics and Computer Sciences"
+        },
+        {
+            "type": "ALL",
+            "name": "Level", 
+            "value": "200"
+        },
+        {
+            "type": "ALL", 
+            "name": "Purpose of Payment",
+            "value": "Portal Access Fee"
+        }
+    ]
+    }

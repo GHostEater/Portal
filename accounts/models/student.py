@@ -16,6 +16,10 @@ class Student(models.Model):
         ('WAEC/GCE', 'WAEC/GCE'),
         ('NECO/GCE', 'NECO/GCE'),
         ('WAEC/NECO', 'WAEC/NECO'),
+        ('NABTEB', 'NABTEB'),
+        ("NABTEB/WAEC", "NABTEB/WAEC"),
+        ("NABTEB/NECO", "NABTEB/NECO"),
+        ("NABTEB/GCE", "NABTEB/GCE"),
     )
     status_choices = (
         ('1', 'Normal'),

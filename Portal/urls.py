@@ -61,6 +61,7 @@ urlpatterns = [
     url(r'^api/', include('roomallocation.urls')),
     url(r'^api/', include('coursereview.urls')),
     url(r'^api/', include('voting.urls')),
+    url(r'^api/', include('transcript.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:

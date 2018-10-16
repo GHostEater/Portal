@@ -77,6 +77,7 @@ INSTALLED_APPS = [
     'roomallocation',
     'coursereview',
     'voting',
+    'transcript',
 ]
 
 MIDDLEWARE = [

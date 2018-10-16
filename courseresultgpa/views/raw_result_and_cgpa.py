@@ -8,13 +8,21 @@ from rest_framework.response import Response
 from accounts.models import Student
 from accounts.serializers import StudentSerializer
 from coursereg.models import CourseReg
+from coursereg.serializers import CourseRegSerializer
 from courseresult.models import CourseResult
 from courseresult.serializers import CourseResultSerializer
 from courseresultgpa.models import CourseResultGPA
+from courseresultgpa.serializers import CourseResultGPASerializer
 from courseresultgpa.utils import cgpa_calculator
 from coursetomajor.models import CourseToMajor
 from coursetomajor.serializers import CourseToMajorSerializer
 from coursewaving.models import WavedCourses
+from coursewaving.serializers import WavedCoursesSerializer
+from session.models import Session
+
+
+def replace_str_index(text, index=0, replacement=''):
+    return '%s%s%s' % (text[:index], replacement, text[index+1:])
 
 
 @api_view(['GET'])
@@ -31,11 +39,11 @@ def raw_result_and_cgpa(request):
     probation = []
     withdrawal = []
 
-    results = CourseResult.objects.filter(session=req['session'],
-                                          course__semester=req['semester'],
-                                          student__major=req['major'],
-                                          student__level=req['level'])
-    students = Student.objects.filter(major=req['major'], level=req['level'])
+    results = CourseResultSerializer.setup_eager_loading(CourseResult.objects.filter(session=req['session'],
+                                                                                     student__major=req['major'],
+                                                                                     student__level=req['level'])
+                                                                             .exclude(final=None))
+    students = StudentSerializer.setup_eager_loading(Student.objects.filter(major=req['major'], level=req['level']))
 
     for student in students:
         if student.status == '3':
@@ -48,24 +56,29 @@ def raw_result_and_cgpa(request):
             deferment.append(student)
         elif student.status == '1':
             try:
-                wavings = WavedCourses.objects.filter(student=student.id)
+                wavings = WavedCoursesSerializer.setup_eager_loading(WavedCourses.objects
+                                                                     .filter(student=student.id))
             except WavedCourses.DoesNotExist:
                 wavings = None
             try:
-                course_reg = CourseReg.objects.filter(student=student.id)
+                course_reg = CourseRegSerializer.setup_eager_loading(CourseReg.objects
+                                                                     .filter(student=student.id))
             except CourseReg.DoesNotExist:
                 course_reg = None
-            course_to_major = CourseToMajor.objects.filter(major=req['major'],
-                                                           level__level__lte=student.level.level,
-                                                           course__semester=req['semester'])
+            course_to_major = CourseToMajorSerializer.setup_eager_loading(CourseToMajor.objects
+                                                                          .filter(major=req['major'],
+                                                                                  level__level__lte=student.level.level)
+                                                                          )
 
             try:
                 result = results.filter(student=student.id)
             except CourseResult.DoesNotExist:
                 result = None
 
-            std_result = CourseResult.objects.filter(student=student.id)
-            std_result_fail = std_result.filter(grade='E')
+            std_result = CourseResultSerializer.setup_eager_loading(CourseResult.objects
+                                                                    .filter(student=student.id)
+                                                                    .exclude(final=None))
+            std_result_fail = std_result.filter(grade='F')
             fail = []
             outstandings = []
 
@@ -101,8 +114,9 @@ def raw_result_and_cgpa(request):
                 except CourseResult.DoesNotExist:
                     not_in_result = True
                 not_same_or_lower_level = course.level.level <= student.level.level
+                not_same_or_lower_semester = course.course.semester <= int(req['semester'])
 
-                if not_in_course_reg and not_in_waving and not_in_result and not_same_or_lower_level:
+                if not_in_course_reg and not_in_waving and not_in_result and not_same_or_lower_level and not_same_or_lower_semester:
                     outstandings.append(course)
 
                 try:
@@ -118,13 +132,42 @@ def raw_result_and_cgpa(request):
                     outstandings.append(course)
 
             try:
-                gps = CourseResultGPA.objects.filter(student=student.id).order_by('-session', '-semester')
-                if gps.get(session=req['session'], semester=req['semester']):
-                    last_gp = gps[1]
+                gps = CourseResultGPASerializer.setup_eager_loading(CourseResultGPA.objects.filter(student=student.id)
+                                                                    .order_by('-session', '-semester'))
+
+                try:
+                    gp_current = gps.get(session=req['session'], semester=req['semester'])
+                    gp_curr = True
+                except CourseResultGPA.DoesNotExist:
+                    gp_curr = False
+
+                if gp_curr:
+                    if gp_current.semester == '2':
+                        semester = 1
+                        last_gp = gps.get(session=req['session'], semester=semester)
+                    else:
+                        semester = 2
+                        sess = Session.objects.get(pk=req['session'])
+                        s1 = int(sess.session[3])-1
+                        s2 = int(sess.session[8])-1
+                        session = replace_str_index(sess.session, 3, s1)
+                        session2 = replace_str_index(session, 8, s2)
+                        last_gp = gps.get(session__session=session2, semester=semester)
                 else:
-                    last_gp = gps[0]
-                gps = CourseResultGPA.objects.filter(student=student.id).order_by('session', 'semester')
-            except:
+                    try:
+                        last_gp = gps[0]
+                    except:
+                        last_gp = CourseResultGPA()
+                        last_gp.cgpa = 0
+                        last_gp.gpa = 0
+                        last_gp.ctcp = 0
+                        last_gp.tcp = 0
+                        last_gp.ctnu = 0
+                        last_gp.tnu = 0
+                        last_gp.tce = 0
+                gps = CourseResultGPASerializer.setup_eager_loading(CourseResultGPA.objects.filter(student=student.id)
+                                                                    .order_by('session', 'semester'))
+            except CourseResultGPA.DoesNotExist:
                 gps = []
                 last_gp = CourseResultGPA()
                 last_gp.cgpa = 0
@@ -149,6 +192,9 @@ def raw_result_and_cgpa(request):
                 prob = 1
             elif count == 3:
                 withdraw = 1
+
+            result = result.filter(course__semester=req['semester'])
+
             new_gp = cgpa_calculator(result, last_gp, fail, outstandings)
             status = new_gp['status']
             gp_status = new_gp['status']
@@ -197,7 +243,8 @@ def raw_result_and_cgpa(request):
 
             stds.append(obj)
 
-    total = len(_pass) + len(pcso) + len(probation) + len(withdrawal) + len(leave) + len(sick) + len(deferment) + len(suspension)
+    total = int(len(_pass) + len(pcso) + len(probation) + len(withdrawal) + len(leave) + len(sick) + len(deferment)
+                + len(suspension))
 
     response = {
         'students': stds,

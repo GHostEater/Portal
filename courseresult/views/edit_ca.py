@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from course.models import Course
 from courseresult.models import CourseResult
 from courseresult.serializers import CourseResultSerializer
-from courseresult.utils import grader
+from courseresult.utils import grader, round_final
 
 
 @api_view(['POST'])
@@ -34,8 +34,10 @@ def edit_ca(request):
         ca = 0
 
     final = float(ca) + float(exam)
-    if final >= 100:
-        final = 100
+    if final >= 100.00:
+        final = 100.00
+
+    final = round_final(final)
 
     g = grader(final)
     result.grade = g['grade']

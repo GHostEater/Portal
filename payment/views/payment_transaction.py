@@ -9,7 +9,7 @@ from payment.serializers import PaymentSerializer
 
 class PaymentTransactionDetailAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = PaymentSerializer
-    lookup_field = 'transaction_id'
+    lookup_field = 'order_id'
 
     def get_queryset(self):
         queryset = Payment.objects.all()

@@ -11,10 +11,14 @@ from rest_framework.response import Response
 @api_view(['POST'])
 def hasher(request):
     data = request.data
-    key = str(data['key'].decode('hex'))
+    # key = str(data['key'].decode('hex'))
     enc = str(data['enc'])
 
-    hsh = hmac.new(key=key, msg=enc, digestmod=hashlib.sha256)
+    # hsh = hmac.new(key=key, msg=enc, digestmod=hashlib.sha256)
+    # hsh_dig = hsh.hexdigest()
+
+    hsh = hashlib.sha512()
+    hsh.update(enc)
     hsh_dig = hsh.hexdigest()
 
     serial = {"hex": hsh_dig}

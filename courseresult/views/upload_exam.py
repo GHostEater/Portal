@@ -7,7 +7,7 @@ from rest_framework.response import Response
 
 from course.models import Course
 from courseresult.models import CourseResult
-from courseresult.utils import grader
+from courseresult.utils import grader, round_final
 
 
 @api_view(['POST'])
@@ -42,7 +42,9 @@ def upload_exam(request):
 
         final = float(ca) + float(exam)
         if final >= 100:
-            final = 100
+            final = 100.00
+
+        final = round_final(final)
 
         g = grader(final)
         result.grade = g['grade']

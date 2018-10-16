@@ -27,6 +27,9 @@ class PaymentSerializer(serializers.ModelSerializer):
             'application__choice',
             'application__choice__dept',
             'application__choice__dept__college',
+            'transcript_app',
+            'transcript_app__dept',
+            'transcript_app__dept__college',
             'session',
         )
         return queryset

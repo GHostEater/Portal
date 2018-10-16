@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^gpa/(?P<pk>[0-9]+)/$', views.CourseResultGPADetailAPIView.as_view(), name='course_result_gpa_detail'),
 
     url(r'^gpa/raw-result-and-cgpa/$', views.raw_result_and_cgpa),
+    url(r'^gpa/raw-result-and-cgpa-specific/$', views.raw_result_and_cgpa_specific),
     url(r'^gpa/release-result-and-cgpa/$', views.release_result_and_cgpa),
     url(r'^gpa/result-test/$', views.result_test),
 ]

@@ -40,6 +40,7 @@ class Application(models.Model):
     )
     programme_choices = (
         ('Undergraduate', 'Undergraduate'),
+        ('Undergraduate Transfer', 'Undergraduate Transfer'),
         ('Postgraduate', 'Postgraduate'),
         ('JUPEB', 'JUPEB'),
     )
@@ -53,6 +54,7 @@ class Application(models.Model):
         ('Off Campus', 'Off Campus'),
     )
 
+    app_no = models.CharField(max_length=256, null=True, blank=True)
     programme = models.CharField(max_length=200, choices=programme_choices)
     programme_type = models.CharField(max_length=200, choices=programme_type_choices, null=True, blank=True)
     mode_of_entry = models.CharField(max_length=200, choices=mode_of_entry_choices, null=True, blank=True)
@@ -67,14 +69,14 @@ class Application(models.Model):
     address = models.TextField()
     phone = models.CharField(max_length=200)
     religion = models.CharField(max_length=200)
-    sponsor = models.CharField(max_length=200)
+    sponsor = models.TextField()
     sponsor_address = models.TextField()
     sponsor_phone = models.CharField(max_length=200)
     maiden_name = models.TextField(null=True, blank=True)
     marital_status = models.CharField(max_length=200, null=True, blank=True)
     passport_number = models.CharField(max_length=200, null=True, blank=True)
     post_address = models.TextField(null=True, blank=True)
-    next_kin = models.CharField(max_length=200, null=True, blank=True)
+    next_kin = models.TextField(null=True, blank=True)
     next_kin_phone = models.CharField(max_length=200, null=True, blank=True)
     next_kin_address = models.TextField(null=True, blank=True)
     institution_attended = models.TextField(null=True, blank=True)
@@ -121,6 +123,17 @@ class Application(models.Model):
     admitted = models.BooleanField(default=0)
     level = models.ForeignKey(Level, null=True, blank=True)
     choice = models.ForeignKey(Major, null=True, blank=True)
+    reason_transfer = models.TextField(null=True, blank=True)
+    curr_cgpa = models.TextField(null=True, blank=True)
+    curr_uni = models.CharField(max_length=256, null=True, blank=True)
+    curr_course = models.CharField(max_length=256, null=True, blank=True)
+    curr_year_of_entry = models.CharField(max_length=256, null=True, blank=True)
+    email_hod = models.EmailField(max_length=255, null=True, blank=True)
+    email_dean = models.EmailField(max_length=255, null=True, blank=True)
+    dean_comment = models.TextField(null=True, blank=True)
+    hod_comment = models.TextField(null=True, blank=True)
+    hod_signature = models.ImageField(null=True, blank=True)
+    dean_signature = models.ImageField(null=True, blank=True)
 
     def __str__(self):
         return str(self.last_name+", "+self.first_name+" "+self.email+" "+self.phone+" "+self.programme+" "+str(self.session))

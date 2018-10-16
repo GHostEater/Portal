@@ -12,6 +12,7 @@ admin.site.site_title = "Fountain API"
 
 class UserAdmin(admin.ModelAdmin):
     list_display = ("username", "last_name", "first_name", "type", "unit")
+    search_fields = ("username", "last_name", "first_name", "type", "email")
 
 admin.site.register(User, UserAdmin)
 admin.site.register(CollegeOfficer)

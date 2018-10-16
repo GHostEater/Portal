@@ -14,7 +14,7 @@ def cgpa_calculator(results, last, fail, outsanding):
             tnu += float(result.course.unit)
             tcp += float(result.gp) * float(result.course.unit)
 
-            if result.grade is not "E":
+            if result.grade is not "F":
                 tce += int(result.gp)
 
     if tcp == 0 or tnu == 0:
@@ -44,11 +44,11 @@ def cgpa_calculator(results, last, fail, outsanding):
     if (len(fail) > 0) or (len(outsanding) > 0):
         status = 0
 
-    if cgpa >= 3.50:
+    if cgpa >= 4.00:
         gp_status = 1
-    if (cgpa >= 2.00) and (cgpa <= 3.49):
+    if (cgpa >= 1.50) and (cgpa <= 3.99):
         gp_status = 2
-    if cgpa <= 1.99:
+    if cgpa <= 1.49:
         gp_status = 3
     if cgpa < 1.00:
         gp_status = 4

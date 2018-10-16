@@ -11,7 +11,11 @@ from sitelog.models import Log
 
 class LogAPIView(ListCreateAPIView):
     serializer_class = LogSerializer
-    queryset = Log.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        queryset = Log.objects.filter(date__gte=self.request.GET['min'], date__lte=self.request.GET['max'])
+        return queryset
 
 
 class LogDetailAPIView(RetrieveAPIView):
