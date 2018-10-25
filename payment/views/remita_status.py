@@ -17,7 +17,7 @@ def remita_status(request):
     remita_stat = "https://login.remita.net/remita/ecomm"
     req = request.GET
 
-    payment = Payment.objects.find(rrr=req['rrr'])
+    payment = Payment.objects.get(rrr=req['rrr'])
 
     hsh = hashlib.sha512()
     hsh.update(payment.rrr+payment.payment_type.api_key+payment.payment_type.merchant_id)
@@ -26,15 +26,18 @@ def remita_status(request):
     r = requests.get(remita_stat+"/"+payment.payment_type.merchant_id+"/"+payment.rrr+"/"+hsh_dig+"/status.reg")
     data = json.loads(r.text)
 
+    print data
+
     status = data['message']
     if (data['status'] == '00') or (data['status'] == '01'):
         payment.paid = True
         payment.status = status
+        payment.amount = data['amount']
         payment.save()
     else:
         payment.status = status
         payment.paid = False
+        payment.amount = data['amount']
         payment.save()
-    payment.payment_type.amount += 350
 
     return Response(PaymentSerializer(payment).data)

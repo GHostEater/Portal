@@ -6,8 +6,10 @@ from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView,
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from accounts.models import Student
 from courseallocation.models import CourseAllocation
 from courseallocation.serializers import CourseAllocationSerializer
+from coursereg.models import CourseReg
 from coursereview.serializers import CourseReviewSerializer, CourseReviewCreateSerializer
 from coursereview.models import CourseReview
 
@@ -62,6 +64,61 @@ class CourseReviewDetailAPIView(RetrieveUpdateDestroyAPIView):
         queryset = CourseReview.objects.all()
         queryset = self.get_serializer_class().setup_eager_loading(queryset)
         return queryset
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def course_review_restrict(request):
+    reviews = CourseReview.objects.filter(course__semester=request.GET['semester'],
+                                          session=request.GET['session'],
+                                          student=request.GET['student'])
+    course_reg = CourseReg.objects.filter(course__semester=request.GET['semester'],
+                                          session=request.GET['session'],
+                                          student=request.GET['student'])
+    done_reviews = False
+
+    for course in course_reg:
+        try:
+            reviews.get(course=course.course)
+            done_reviews = True
+        except CourseReview.DoesNotExist:
+            done_reviews = False
+
+    if course_reg.count() == 0:
+        done_reviews = True
+
+    student = Student.objects.get(pk=request.GET['student'])
+    if student.level.level == '100':
+        done_reviews = True
+
+    return Response({'done_reviews': done_reviews})
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def course_review_student(request):
+    req = request.GET
+
+    response = []
+
+    student = Student.objects.get(pk=req['student'])
+    course_reg = CourseReg.objects.filter(student=req['student'],
+                                          session=req['session'],
+                                          course__semester=req['semester'])
+    allocations = CourseAllocation.objects.filter(session=req['session'],
+                                                  course__semester=req['semester'],
+                                                  dept=student.major.dept)
+    for course in course_reg:
+        try:
+            lects = allocations.filter(course=course.course)
+
+            for lect in lects:
+                response.append(lect)
+
+        except CourseAllocation.DoesNotExist:
+            lects = CourseAllocation()
+
+    return Response(CourseAllocationSerializer(response, many=True).data)
 
 
 @api_view(['GET'])
@@ -193,7 +250,7 @@ def course_review_course(request):
 
     total = avg_q1 + avg_q2 + avg_q3 + avg_q4 + avg_q5 + avg_q6 + avg_q7 + avg_q8 + avg_q9 + avg_q10 + avg_q11 + avg_q12 + avg_q13 + avg_q14 + avg_q15 + avg_q16 + avg_q17 + avg_q18 + avg_q19 + avg_q20 + avg_q21 + avg_q22 + avg_q23 + avg_q24 + avg_q25 + avg_q26 + avg_q27 + avg_q28 + avg_q29
 
-    total_percentage = float((total/145)*100)
+    total_percentage = float((total / 145) * 100)
 
     avg_scores = {
         'q1': avg_q1,

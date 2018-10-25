@@ -16,8 +16,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
     def setup_eager_loading(queryset):
         queryset = queryset.select_related(
             'dept',
-            'dept__college',
-            'mode_of_entry',
+            'dept__college'
         )
         return queryset
 

@@ -5,7 +5,6 @@ from django.db import models
 
 # Create your models here.
 from dept.models import Dept
-from modeofentry.models import ModeOfEntry
 
 
 class Application(models.Model):

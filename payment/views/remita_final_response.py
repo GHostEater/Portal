@@ -27,7 +27,7 @@ def remita_final_response(request):
 
     r = requests.get(remita_status+"/"+payment.payment_type.merchant_id+"/"+rrr+"/"+hsh_dig+"/status.reg")
     data = json.loads(r.text)
-    if request.GET['status']:
+    if hasattr(request.GET, 'status'):
         status = request.GET['status']
     else:
         status = data['message']

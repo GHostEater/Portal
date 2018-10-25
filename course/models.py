@@ -20,7 +20,7 @@ class Course(models.Model):
         (2, '2nd Semester'),
     )
     code = models.CharField(max_length=20)
-    title = models.CharField(max_length=50)
+    title = models.CharField(max_length=255)
     unit = models.CharField(max_length=10)
     type = models.CharField(max_length=20, choices=type_choices)
     ca = models.IntegerField(default=30)

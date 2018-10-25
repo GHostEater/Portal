@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.generics import ListAPIView, RetrieveDestroyAPIView, CreateAPIView
+from rest_framework.generics import (ListAPIView, RetrieveDestroyAPIView, CreateAPIView)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -45,26 +45,37 @@ def student_payment_unedited(request):
     data = request.GET
 
     student = Student.objects.get(pk=data['student'])
+    payment_to_major = PaymentToMajor()
 
-    jme = False
-    de = False
-    conversion = False
-    pt = False
     if student.mode_of_entry.name == "JME":
-        jme = True
+        payment_to_major = PaymentToMajor.objects.filter(major=student.major.id,
+                                                         jme=True,
+                                                         level__level__lte=student.level.level)
     if student.mode_of_entry.name == "D/E":
-        de = True
+        payment_to_major = PaymentToMajor.objects.filter(major=student.major.id,
+                                                         de=True,
+                                                         level__level__lte=student.level.level)
     if student.mode_of_entry.name == "D/E 300":
-        conversion = True
+        payment_to_major = PaymentToMajor.objects.filter(major=student.major.id,
+                                                         conversion=True,
+                                                         level__level__lte=student.level.level)
     if student.programme_type == "Part Time":
-        pt = True
+        if student.mode_of_entry.name == "JME":
+            payment_to_major = PaymentToMajor.objects.filter(major=student.major.id,
+                                                             jme=True,
+                                                             pt=True,
+                                                             level__level__lte=student.level.level)
+        if student.mode_of_entry.name == "D/E":
+            payment_to_major = PaymentToMajor.objects.filter(major=student.major.id,
+                                                             de=True,
+                                                             pt=True,
+                                                             level__level__lte=student.level.level)
+        if student.mode_of_entry.name == "D/E 300":
+            payment_to_major = PaymentToMajor.objects.filter(major=student.major.id,
+                                                             conversion=True,
+                                                             pt=True,
+                                                             level__level__lte=student.level.level)
 
-    payment_to_major = PaymentToMajor.objects.filter(major=student.major.id,
-                                                     jme=jme,
-                                                     de=de,
-                                                     level__level__lte=student.level.level,
-                                                     conversion=conversion,
-                                                     pt=pt)
     return Response(PaymentToMajorSerializer(payment_to_major, many=True).data)
 
 
@@ -74,26 +85,36 @@ def student_payment(request):
     req = request.GET
 
     student = Student.objects.get(pk=req['student'])
+    payment_to_major = PaymentToMajor()
 
-    jme = False
-    de = False
-    conversion = False
-    pt = False
     if student.mode_of_entry.name == "JME":
-        jme = True
+        payment_to_major = PaymentToMajor.objects.filter(major=student.major.id,
+                                                         jme=True,
+                                                         level__level__lte=student.level.level)
     if student.mode_of_entry.name == "D/E":
-        de = True
+        payment_to_major = PaymentToMajor.objects.filter(major=student.major.id,
+                                                         de=True,
+                                                         level__level__lte=student.level.level)
     if student.mode_of_entry.name == "D/E 300":
-        conversion = True
+        payment_to_major = PaymentToMajor.objects.filter(major=student.major.id,
+                                                         conversion=True,
+                                                         level__level__lte=student.level.level)
     if student.programme_type == "Part Time":
-        pt = True
-
-    payment_to_major = PaymentToMajor.objects.filter(major=student.major.id,
-                                                     jme=jme,
-                                                     de=de,
-                                                     level__level__lte=student.level.level,
-                                                     conversion=conversion,
-                                                     pt=pt)
+        if student.mode_of_entry.name == "JME":
+            payment_to_major = PaymentToMajor.objects.filter(major=student.major.id,
+                                                             jme=True,
+                                                             pt=True,
+                                                             level__level__lte=student.level.level)
+        if student.mode_of_entry.name == "D/E":
+            payment_to_major = PaymentToMajor.objects.filter(major=student.major.id,
+                                                             de=True,
+                                                             pt=True,
+                                                             level__level__lte=student.level.level)
+        if student.mode_of_entry.name == "D/E 300":
+            payment_to_major = PaymentToMajor.objects.filter(major=student.major.id,
+                                                             conversion=True,
+                                                             pt=True,
+                                                             level__level__lte=student.level.level)
     try:
         std_payment_wavings = WavedPayment.objects.filter(student=student.id)
     except WavedPayment.DoesNotExist:
@@ -121,9 +142,11 @@ def student_payment(request):
 
         if not_in_payments and not_in_wavings:
             # If payment to major is 60% or 40% Tuition only show if 100% not paid in that level
-            if (p.payment_type.name == "Tuition Fees 60%") or (p.payment_type.name == "Tuition Fees 40%"):
+            if (p.payment_type.name == ("Tuition Fees 60% " + student.major.dept.college.acronym)) or (
+                        p.payment_type.name == ("Tuition Fees 40% " + student.major.dept.college.acronym)):
                 try:
-                    std_payments.get(payment_type__name="Tuition Fees 100%", paid=True, level=p.level.id)
+                    std_payments.get(payment_type__name="Tuition Fees 100% " + student.major.dept.college.acronym,
+                                     paid=True, level=p.level.id)
                     no_100_payment = False
                 except Payment.DoesNotExist:
                     no_100_payment = True
@@ -143,7 +166,7 @@ def student_payment(request):
                     no_partial_payment = True
                 if no_100_payment and no_partial_payment:
                     payments.append(p)
-            elif p.payment_type.name == "Tuition Fees 100%":
+            elif p.payment_type.name == ("Tuition Fees 100% " + student.major.dept.college.acronym):
                 try:
                     partial_payments = std_payments.filter(payment_type__name="Tuition Fees Partial",
                                                            paid=True,
@@ -151,7 +174,7 @@ def student_payment(request):
                     p_payments_total = 0
                     for pay in partial_payments:
                         p_payments_total += pay.amount
-                    if p_payments_total >= p.payment_type.amount:
+                    if p_payments_total > 0:
                         no_partial_payment = False
                     else:
                         no_partial_payment = True
@@ -159,12 +182,22 @@ def student_payment(request):
                     no_partial_payment = True
 
                 try:
-                    std_payments.get(payment_type__name="Tuition Fees 60%", paid=True, level=p.level.id,
+                    std_payments.get(payment_type__name="Tuition Fees 60% " + student.major.dept.college.acronym,
+                                     paid=True, level=p.level.id,
                                      session=req['session'])
                     no_60_payment = False
                 except Payment.DoesNotExist:
                     no_60_payment = True
-                if no_partial_payment and no_60_payment:
+
+                try:
+                    std_payments.get(payment_type__name="Tuition Fees 40% " + student.major.dept.college.acronym,
+                                     paid=True, level=p.level.id,
+                                     session=req['session'])
+                    no_40_payment = False
+                except Payment.DoesNotExist:
+                    no_40_payment = True
+
+                if no_partial_payment and no_60_payment and no_40_payment:
                     payments.append(p)
             elif p.payment_type.name == "Tuition Fees Partial":
                 continue

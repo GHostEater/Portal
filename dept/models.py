@@ -8,7 +8,7 @@ from college.models import College
 
 
 class Dept(models.Model):
-    name = models.CharField(max_length=50, default='')
+    name = models.CharField(max_length=255, default='')
     college = models.ForeignKey(College)
 
     def __str__(self):

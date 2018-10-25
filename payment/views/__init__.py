@@ -4,6 +4,7 @@ from payment_api import PaymentAPIView, PaymentCreateAPIView, PaymentDetailAPIVi
 from payment_student import PaymentStudentAPIView
 from payment_transaction import PaymentTransactionDetailAPIView
 from payment_application import PaymentApplicationAPIView
+from payment_transcript import PaymentTranscriptAPIView
 from hasher import hasher
 from xpress_response import xpress_response
 from xpress_pay_cashier import xpress_pay_cashier
@@ -16,4 +17,7 @@ from appplication_unpaid_list import application_unpaid_list
 from remita_rrrgen_response import remita_rrrgen_response
 from remita_final_response import remita_final_response
 from remita_notification import remita_notification
+from remita_status import remita_status
 from generate_rrr import generate_rrr
+from access_fee_restrict import access_fee_restrict
+from tuition_fee_clearance import tuition_fee_clearance

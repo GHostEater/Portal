@@ -23,7 +23,8 @@ class Payment(models.Model):
     type = models.CharField(max_length=256, choices=type_choices, default="Web")
     student = models.ForeignKey(Student, null=True, blank=True)
     application = models.ForeignKey(Application, null=True, blank=True)
-    transcript_app = models.ForeignKey(transcript.models.Application, null=True, blank=True, related_name='transcript_app')
+    transcript_app = models.ForeignKey(
+        transcript.models.Application, null=True, blank=True, related_name='transcript_app')
     session = models.ForeignKey(Session, null=True, blank=True)
     level = models.ForeignKey(Level, null=True, blank=True)
     transaction_id = models.CharField(max_length=256, null=True, blank=True)

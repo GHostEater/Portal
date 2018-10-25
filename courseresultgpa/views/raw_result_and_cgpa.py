@@ -99,7 +99,7 @@ def raw_result_and_cgpa(request):
 
             for course in course_to_major:
                 try:
-                    course_reg.get(course=course.course.id)
+                    course_reg.get(course=course.course.id,session=req['session'])
                     not_in_course_reg = False
                 except CourseReg.DoesNotExist:
                     not_in_course_reg = True
@@ -120,7 +120,7 @@ def raw_result_and_cgpa(request):
                     outstandings.append(course)
 
                 try:
-                    in_course_reg = course_reg.get(course=course.course.id)
+                    in_course_reg = course_reg.get(course=course.course.id,session=req['session'])
                 except CourseReg.DoesNotExist:
                     in_course_reg = False
                 try:
@@ -134,6 +134,7 @@ def raw_result_and_cgpa(request):
             try:
                 gps = CourseResultGPASerializer.setup_eager_loading(CourseResultGPA.objects.filter(student=student.id)
                                                                     .order_by('-session', '-semester'))
+                last_gp = gps[0]
 
                 try:
                     gp_current = gps.get(session=req['session'], semester=req['semester'])
@@ -142,7 +143,7 @@ def raw_result_and_cgpa(request):
                     gp_curr = False
 
                 if gp_curr:
-                    if gp_current.semester == '2':
+                    if gp_current.semester == 2:
                         semester = 1
                         last_gp = gps.get(session=req['session'], semester=semester)
                     else:
@@ -153,18 +154,18 @@ def raw_result_and_cgpa(request):
                         session = replace_str_index(sess.session, 3, s1)
                         session2 = replace_str_index(session, 8, s2)
                         last_gp = gps.get(session__session=session2, semester=semester)
-                else:
-                    try:
-                        last_gp = gps[0]
-                    except:
-                        last_gp = CourseResultGPA()
-                        last_gp.cgpa = 0
-                        last_gp.gpa = 0
-                        last_gp.ctcp = 0
-                        last_gp.tcp = 0
-                        last_gp.ctnu = 0
-                        last_gp.tnu = 0
-                        last_gp.tce = 0
+                # else:
+                #     try:
+                #         last_gp = gps[0]
+                #     except:
+                #         last_gp = CourseResultGPA()
+                #         last_gp.cgpa = 0
+                #         last_gp.gpa = 0
+                #         last_gp.ctcp = 0
+                #         last_gp.tcp = 0
+                #         last_gp.ctnu = 0
+                #         last_gp.tnu = 0
+                #         last_gp.tce = 0
                 gps = CourseResultGPASerializer.setup_eager_loading(CourseResultGPA.objects.filter(student=student.id)
                                                                     .order_by('session', 'semester'))
             except CourseResultGPA.DoesNotExist:
@@ -253,10 +254,10 @@ def raw_result_and_cgpa(request):
         'pcso': pcso,
         'probation': probation,
         'withdrawal': withdrawal,
-        'leave': leave,
-        'sick': sick,
-        'deferment': deferment,
-        'suspension': suspension
+        'leave': StudentSerializer(leave,many=True).data,
+        'sick': StudentSerializer(sick,many=True).data,
+        'deferment': StudentSerializer(deferment,many=True).data,
+        'suspension': StudentSerializer(suspension,many=True).data
     }
 
     return Response(response)

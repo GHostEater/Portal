@@ -38,6 +38,7 @@ def remita_notification(request):
             if (dat['status'] == '00') or (dat['status'] == '01'):
                 payment.paid = True
                 payment.status = dat['message']
+                payment.amount = dat['amount']
                 try:
                     payment.save()
                     pr += 1
@@ -45,13 +46,13 @@ def remita_notification(request):
                     fail += 1
             else:
                 payment.status = dat['message']
+                payment.amount = dat['amount']
                 payment.paid = False
                 try:
                     payment.save()
                     pr += 1
                 except IntegrityError:
                     fail += 1
-            payment.payment_type.amount += 350
             payments.append(payment)
         serial = {
             'payments_sent': p,

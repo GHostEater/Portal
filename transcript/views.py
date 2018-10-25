@@ -2,8 +2,8 @@ from __future__ import unicode_literals
 
 from rest_framework.generics import ListAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView
 from rest_framework.permissions import IsAuthenticated
-from admission.serializers import ApplicationSerializer, ApplicationCreateSerializer
-from admission.models import Application
+from transcript.serializers import ApplicationSerializer, ApplicationCreateSerializer
+from transcript.models import Application
 
 # Create your views here.
 
@@ -34,7 +34,6 @@ class ApplicationCreateAPIView(CreateAPIView):
 
 class ApplicationStudentAPIView(ListAPIView):
     serializer_class = ApplicationSerializer
-    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         queryset = Application.objects.filter(matric_no=self.request.GET['matric_no'])

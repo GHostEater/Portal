@@ -6,6 +6,7 @@ urlpatterns = [
     url(r'^payment/new/$', views.PaymentCreateAPIView.as_view()),
     url(r'^payment/student/$', views.PaymentStudentAPIView.as_view()),
     url(r'^payment/application/$', views.PaymentApplicationAPIView.as_view()),
+    url(r'^payment/transcript/$', views.PaymentTranscriptAPIView.as_view()),
     url(r'^payment/order/(?P<order_id>[A-Za-z0-9_@./#&+-]*)/$', views.PaymentTransactionDetailAPIView.as_view()),
     url(r'^payment/(?P<pk>[0-9]+)/$', views.PaymentDetailAPIView.as_view()),
     url(r'^payment/student-paid-list/$', views.student_paid_list),
@@ -13,10 +14,14 @@ urlpatterns = [
     url(r'^payment/application-unpaid-list/$', views.application_unpaid_list),
     url(r'^payment/application-paid-list/$', views.application_paid_list),
 
+    url(r'^payment/access-fee-restrict/$', views.access_fee_restrict),
+    url(r'^payment/tuition-fee-clearance/$', views.tuition_fee_clearance),
+
     url(r'^generate-rrr/$', views.generate_rrr),
     url(r'^remita-rrrgen-response/$', views.remita_rrrgen_response, name='rrrgen_response'),
     url(r'^remita-final-response/$', views.remita_final_response, name='final_response'),
     url(r'^remita-notification/$', views.remita_notification),
+    url(r'^remita-status/$', views.remita_status),
 
     url(r'^hasher/$', views.hasher),
     url(r'^test/$', views.email_test)

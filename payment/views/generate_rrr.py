@@ -8,6 +8,7 @@ import requests
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+from level.models import Level
 from payment.models import Payment
 from payment.serializers import PaymentSerializer
 
@@ -16,6 +17,17 @@ from payment.serializers import PaymentSerializer
 def generate_rrr(request):
     gen_rrr = "https://login.remita.net/remita/exapp/api/v1/send/api/echannelsvc/merchant/api/paymentinit"
     req = request.data
+
+    matric_no = ''
+    dept = ''
+    level = Level()
+
+    if hasattr(req, 'matricNo'):
+        matric_no = req['matricNo']
+    if hasattr(req, 'dept'):
+        dept = req['dept']
+    if hasattr(req, 'level'):
+        level = Level.objects.get(pk=req['level'])
 
     payment = Payment.objects.get(pk=req['payment'])
 
@@ -35,17 +47,17 @@ def generate_rrr(request):
         "description": payment.payment_type.name,
         "customFields": [{
             "name": "Matric No",
-            "value": req['matricNo'],
+            "value": matric_no,
             "type": "ALL"
         },
             {
             "name": "Department",
-            "value": req['dept'],
+            "value": dept,
             "type": "ALL"
         },
             {
             "name": "Level",
-            "value": req['level'],
+            "value": level.level,
             "type": "ALL"
         },
             {
