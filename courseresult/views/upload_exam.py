@@ -1,22 +1,29 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import datetime
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+from accounts.models import Lecturer
 from course.models import Course
 from courseresult.models import CourseResult
 from courseresult.utils import grader, round_final
+from courseresultuploadlog.models import Log
+from session.models import Session
 
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def upload_exam(request):
-    data = request.data
+    req = request.data
+    upload = request.data['exam']
+    uploaded = ""
     processed = 0
+    was_high = False
 
-    for i, d in enumerate(data):
+    for i, d in enumerate(upload):
         try:
             result = CourseResult.objects.get(pk=d['id'])
         except CourseResult.DoesNotExist:
@@ -26,8 +33,9 @@ def upload_exam(request):
             continue
 
         course = Course.objects.get(pk=result.course.id)
-        if d['exam'] >= course.exam:
+        if d['exam'] > course.exam:
             exam = course.exam
+            was_high = True
         else:
             exam = float(d['exam'])
 
@@ -55,10 +63,23 @@ def upload_exam(request):
 
         try:
             result.save()
+            uploaded += result.student.user.username + ": " + str(d['exam'])
+            if was_high:
+                uploaded += " (Higher than Course MAX Score) "
+            uploaded += "<br>"
         except:
             continue
 
         processed = i
+
+    log = Log()
+    log.lecturer = Lecturer.objects.get(pk=req['lecturer'])
+    log.course = Course.objects.get(pk=req['course'])
+    log.session = Session.objects.get(pk=req['session'])
+    log.date = datetime.datetime.now()
+    log.upload_type = "Exam"
+    log.uploaded = uploaded
+    log.save()
 
     ret = {
         'processed': processed

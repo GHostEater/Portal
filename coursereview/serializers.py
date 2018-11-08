@@ -37,7 +37,7 @@ class CourseReviewCreateSerializer(serializers.ModelSerializer):
         validators = [
             UniqueTogetherValidator(
                 queryset=CourseReview.objects.all(),
-                fields=('student', 'course', 'session')
+                fields=('student', 'lecturer', 'course', 'session')
             )
         ]
         model = CourseReview

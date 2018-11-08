@@ -20,8 +20,6 @@ def tuition_fee_clearance(request):
 
     payments = Payment.objects.filter(student=student, level=student.level, paid=True)
 
-    pays = []
-
     pay_status = {
         'p60': False,
         'p40': False,
@@ -31,18 +29,12 @@ def tuition_fee_clearance(request):
     for p in payments:
         if p.payment_type.name == ("Tuition Fees 60% " + student.major.dept.college.acronym):
             pay_status['p60'] = True
-            if p not in pays:
-                pays.append(p)
 
         if p.payment_type.name == ("Tuition Fees 40% " + student.major.dept.college.acronym):
             pay_status['p40'] = True
-            if p not in pays:
-                pays.append(p)
 
         if p.payment_type.name == ("Tuition Fees 100% " + student.major.dept.college.acronym):
             pay_status['p100'] = True
-            if p not in pays:
-                pays.append(p)
 
         if (p.payment_type.name == ("Tuition Fees 60% " + student.major.dept.college.acronym)) and (
                     p.payment_type.name == ("Tuition Fees 40% " + student.major.dept.college.acronym)):
@@ -55,8 +47,6 @@ def tuition_fee_clearance(request):
         p_payments_total = 0
         for pay in partial_payments:
             p_payments_total += pay.amount
-            if p not in pays:
-                pays.append(pay)
 
         if student.mode_of_entry.name == "JME":
             tuition_fee_60 = PaymentToMajor.objects.get(
@@ -163,7 +153,7 @@ def tuition_fee_clearance(request):
         no_partial_payment = True
 
     response = {
-        'payments': PaymentSerializer(pays, many=True).data,
+        'payments': PaymentSerializer(payments, many=True).data,
         'pay_status': pay_status
     }
     return Response(response)
