@@ -1,0 +1,11 @@
+<h3>Fountain University</h3>
+<p>Name: {{ payment.student.last_name }}, {{ payment.student.first_name }} {{ payment.application.last_name }}, {{ payment.application.first_name }}</p>
+<p>Transaction ID: {{ payment.transaction_id }}</p>
+{% if payment.prn %}
+  <p>Payment Reference Number: {{ payment.prn }}</p>
+{% endif %}
+<p>Amount: ₦{{ payment.payment_type.amount }}</p>
+<p>For: {{ payment.payment_type.name }}</p>
+<p>Transaction Status: {{ payment.status }}</p>
+<p>Date: {{ payment.date|date:'d-m-Y h:i:s A' }}</p>
+<img src="http://fuo.edu.ng/facilities/img/logo.png">

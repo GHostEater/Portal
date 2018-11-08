@@ -1,0 +1,16 @@
+<h3>Fountain University</h3>
+<img src="{{ app.img.url }}" width="100px">
+<h4>{{app.last_name}}, {{vm.app.first_name}}</h4>
+<h5>Application No: {{vm.app.app_no}}</h5>
+<p>
+  <em> Applied for admission in &nbsp
+    <b>{{app.first_choice}} as First Choice&nbsp
+      <span>and</span>
+    </b>
+    <b>{{app.second_choice}} as Second Choice&nbsp</b>
+    <span>in&nbsp</span>
+    <b>{{app.session.session}} session.</b>
+  </em>
+</p>
+<p>We need you to provide comments and on the student as well as an upload of your signature <a href="{{ app.hod_url }}">Click here</a></p>
+<img src="http://fuo.edu.ng/facilities/img/logo.png">

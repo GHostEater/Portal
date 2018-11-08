@@ -1,0 +1,13 @@
+Django==1.11.1
+PyMySQL
+djangorestframework==3.6.3
+djangorestframework-jwt==1.10
+django-cors-headers
+django-debug-toolbar
+django-tinymce
+django-grappelli
+Pillow
+django-filebrowser
+requests
+Celery
+django-mail-queue
