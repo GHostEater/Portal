@@ -5,4 +5,9 @@ from django.contrib import admin
 from sitelog.models import Log
 
 # Register your models here.
-admin.site.register(Log)
+class LogAdmin(admin.ModelAdmin):
+    list_display = ('action', 'user', 'role', 'date', 'location')
+    search_fields = ('action', 'user', 'role')
+
+
+admin.site.register(Log, LogAdmin)

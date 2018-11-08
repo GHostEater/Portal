@@ -139,7 +139,17 @@ def raw_result_and_cgpa_specific(request):
             try:
                 gps = CourseResultGPASerializer.setup_eager_loading(CourseResultGPA.objects.filter(student=student.id)
                                                                     .order_by('-session', '-semester'))
-                last_gp = gps[0]
+                try:
+                    last_gp = gps[0]
+                except:
+                    last_gp = CourseResultGPA()
+                    last_gp.cgpa = 0
+                    last_gp.gpa = 0
+                    last_gp.ctcp = 0
+                    last_gp.tcp = 0
+                    last_gp.ctnu = 0
+                    last_gp.tnu = 0
+                    last_gp.tce = 0
 
                 try:
                     gp_current = gps.get(session=req['session'], semester=req['semester'])
@@ -159,18 +169,7 @@ def raw_result_and_cgpa_specific(request):
                         session = replace_str_index(sess.session, 3, s1)
                         session2 = replace_str_index(session, 8, s2)
                         last_gp = gps.get(session__session=session2, semester=semester)
-                # else:
-                #     try:
-                #         last_gp = gps[0]
-                #     except:
-                #         last_gp = CourseResultGPA()
-                #         last_gp.cgpa = 0
-                #         last_gp.gpa = 0
-                #         last_gp.ctcp = 0
-                #         last_gp.tcp = 0
-                #         last_gp.ctnu = 0
-                #         last_gp.tnu = 0
-                #         last_gp.tce = 0
+            
                 gps = CourseResultGPASerializer.setup_eager_loading(CourseResultGPA.objects.filter(student=student.id)
                                                                     .order_by('session', 'semester'))
             except CourseResultGPA.DoesNotExist:
