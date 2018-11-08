@@ -65,7 +65,7 @@ def registrable_courses(request):
             not_in_reg = True
 
         try:
-            result.exclude(grade="E").get(course=c.course.id)
+            result.exclude(grade="F").get(course=c.course.id)
             not_in_result = False
         except CourseResult.DoesNotExist:
             not_in_result = True
