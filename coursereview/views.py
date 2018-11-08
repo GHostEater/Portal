@@ -106,8 +106,7 @@ def course_review_student(request):
                                           session=req['session'],
                                           course__semester=req['semester'])
     allocations = CourseAllocation.objects.filter(session=req['session'],
-                                                  course__semester=req['semester'],
-                                                  dept=student.major.dept)
+                                                  course__semester=req['semester'])
     for course in course_reg:
         try:
             lects = allocations.filter(course=course.course)
