@@ -78,6 +78,7 @@ INSTALLED_APPS = [
     'coursereview',
     'voting',
     'transcript',
+    'grade',
 ]
 
 MIDDLEWARE = [
