@@ -78,7 +78,7 @@ def raw_result_and_cgpa(request):
             std_result = CourseResultSerializer.setup_eager_loading(CourseResult.objects
                                                                     .filter(student=student.id)
                                                                     .exclude(final=None))
-            std_result_fail = std_result.filter(grade='F')
+            std_result_fail = std_result.filter(status=0)
             fail = []
             outstandings = []
 
@@ -159,8 +159,8 @@ def raw_result_and_cgpa(request):
                     else:
                         semester = 2
                         sess = Session.objects.get(pk=req['session'])
-                        s1 = int(sess.session[3])-1
-                        s2 = int(sess.session[8])-1
+                        s1 = str(int(sess.session[3])-1)
+                        s2 = str(int(sess.session[8])-1)
                         session = replace_str_index(sess.session, 3, s1)
                         session2 = replace_str_index(session, 8, s2)
                         last_gp = gps.get(session__session=session2, semester=semester)
@@ -253,10 +253,10 @@ def raw_result_and_cgpa(request):
         'pcso': pcso,
         'probation': probation,
         'withdrawal': withdrawal,
-        'leave': StudentSerializer(leave,many=True).data,
-        'sick': StudentSerializer(sick,many=True).data,
-        'deferment': StudentSerializer(deferment,many=True).data,
-        'suspension': StudentSerializer(suspension,many=True).data
+        'leave': StudentSerializer(leave, many=True).data,
+        'sick': StudentSerializer(sick, many=True).data,
+        'deferment': StudentSerializer(deferment, many=True).data,
+        'suspension': StudentSerializer(suspension, many=True).data
     }
 
     return Response(response)
