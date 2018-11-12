@@ -14,7 +14,7 @@ def cgpa_calculator(results, last, fail, outsanding):
             tnu += float(result.course.unit)
             tcp += float(result.gp) * float(result.course.unit)
 
-            if result.grade is not "F":
+            if result.status is not 0:
                 tce += int(result.gp)
 
     if tcp == 0 or tnu == 0:

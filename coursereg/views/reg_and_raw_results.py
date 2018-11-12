@@ -13,6 +13,7 @@ from coursereg.serializers import CourseRegSerializer
 
 from courseresult.models import CourseResult
 from courseresult.serializers import CourseResultSerializer
+from grade.models import Grade
 
 
 @api_view(['GET'])
@@ -25,12 +26,18 @@ def reg_and_raw_results(request):
                                                          .filter(course=data['course'], session=data['session']))
     results = CourseResultSerializer.setup_eager_loading(CourseResult.objects
                                                          .filter(course=data['course'], session=data['session']))
-    a = results.filter(grade="A").count()
-    b = results.filter(grade="B").count()
-    c = results.filter(grade="C").count()
-    d = results.filter(grade="D").count()
-    e = results.filter(grade="E").count()
-    f = results.filter(grade="F").count()
+
+    grades = Grade.objects.filter(active=True)
+
+    res = {}
+    course_grades = []
+
+    for grade in grades:
+        item = {'grade': grade.grade, 'count': results.filter(grade=grade.grade).count()}
+        course_grades.append(item)
+
+    res['course_grades'] = course_grades
+
     _pass = results.filter(status=1).count()
 
     if _pass == 0 or results.count() == 0:
@@ -44,7 +51,6 @@ def reg_and_raw_results(request):
             result = CourseResultSerializer(results.get(student=student.id)).data
         except ObjectDoesNotExist:
             result = {}
-        print(result)
 
         di = {
             'info': StudentSerializer(student).data,
@@ -52,15 +58,7 @@ def reg_and_raw_results(request):
         }
         students.append(di)
 
-    res = {
-        'students': students,
-        'a': a,
-        'b': b,
-        'c': c,
-        'd': d,
-        'e': e,
-        'f': f,
-        'pass_percentage': pass_percentage
-    }
+    res['students'] = students
+    res['pass_percentage'] = pass_percentage
 
     return Response(res)

@@ -33,7 +33,6 @@ def edit_exam(request):
     if exam == -1:
         exam = 0
 
-    print req['exam']
     final = float(ca) + float(exam)
     if final >= 100.00:
         final = 100.00
