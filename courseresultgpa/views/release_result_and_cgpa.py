@@ -20,18 +20,20 @@ def release_result_and_cgpa(request):
     gpas = CourseResultGPA.objects.filter(session=req['session'],
                                           semester=req['semester'],
                                           student__major=req['major'],
-                                          student__level=req['level'])
+                                          student__level=req['level'],
+                                          rel=False)
     results = CourseResult.objects.filter(session=req['session'],
                                           course__semester=req['semester'],
                                           student__major=req['major'],
-                                          student__level=req['level'])
+                                          student__level=req['level'],
+                                          rel=False)
 
     for gpa in gpas:
-        gpa.rel = 1
+        gpa.rel = True
         gpa.save()
 
     for result in results:
-        result.rel = 1
+        result.rel = True
         result.save()
 
     for gpa in gpas:

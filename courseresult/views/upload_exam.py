@@ -2,6 +2,8 @@
 from __future__ import unicode_literals
 
 import datetime
+
+from django.db import IntegrityError
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -67,7 +69,7 @@ def upload_exam(request):
             if was_high:
                 uploaded += " (Higher than Course MAX Score) "
             uploaded += "<br>"
-        except:
+        except IntegrityError:
             continue
 
         processed = i
