@@ -79,6 +79,7 @@ INSTALLED_APPS = [
     'voting',
     'transcript',
     'grade',
+    'courseresultuploadlog',
 ]
 
 MIDDLEWARE = [
