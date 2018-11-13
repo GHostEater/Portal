@@ -6,6 +6,7 @@ from django.db import models
 from course.models import Course
 from accounts.models import Student
 from dept.models import Dept
+from level.models import Level
 from session.models import Session
 
 # Create your models here.
@@ -24,6 +25,7 @@ class CourseResult(models.Model):
     gp = models.IntegerField(null=True, blank=True)
     rel = models.BooleanField(default=0)
     session = models.ForeignKey(Session)
+    level = models.ForeignKey(Level, null=True, blank=True)
     status = models.IntegerField(default=0)
 
 

@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 from django.db import models
 
 # Create your models here.
+from dept.models import Dept
 
 
 class PaymentType(models.Model):
@@ -20,3 +21,10 @@ class PaymentType(models.Model):
 
     def __str__(self):
         return str(self.name+" "+str(self.amount))
+
+
+class TuitionFee(models.Model):
+    first = models.FloatField()
+    second = models.FloatField()
+    total = models.FloatField()
+    dept = models.ForeignKey(Dept)

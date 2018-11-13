@@ -2,6 +2,8 @@
 from __future__ import unicode_literals
 
 from django.db import models
+
+from level.models import Level
 from session.models import Session
 from accounts.models import Student
 from dept.models import Dept
@@ -17,6 +19,7 @@ class CourseResultGPA(models.Model):
     session = models.ForeignKey(Session)
     dept = models.ForeignKey(Dept)
     semester = models.IntegerField()
+    level = models.ForeignKey(Level, null=True, blank=True)
     tcp = models.FloatField()
     tnu = models.FloatField()
     gpa = models.FloatField()
