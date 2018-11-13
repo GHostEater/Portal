@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django.db import IntegrityError
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -48,7 +49,7 @@ def edit_ca(request):
 
     try:
         result.save()
-    except:
+    except IntegrityError:
         result = {}
 
     return Response(CourseResultSerializer(result).data)

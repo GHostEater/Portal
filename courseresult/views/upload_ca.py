@@ -2,6 +2,8 @@
 from __future__ import unicode_literals
 
 import datetime
+
+from django.db import IntegrityError
 from rest_framework.decorators import permission_classes, api_view
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -11,6 +13,7 @@ from course.models import Course
 from courseresult.models import CourseResult
 from courseresultuploadlog.models import Log
 from dept.models import Dept
+from level.models import Level
 from session.models import Session
 
 
@@ -39,13 +42,14 @@ def upload_ca(request):
         result.dept = Dept.objects.get(pk=d['dept'])
         result.course = course
         result.session = Session.objects.get(pk=d['session'])
+        result.level = Level.objects.get(pk=student.level.id)
         try:
             result.save()
             uploaded += student.user.username+": "+str(d['ca'])
             if was_high:
                 uploaded += " (Higher than Course MAX Score) "
             uploaded += "<br>"
-        except:
+        except IntegrityError:
             continue
         processed = i
 

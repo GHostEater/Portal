@@ -68,11 +68,17 @@ def raw_result_and_cgpa_specific(request):
             try:
                 course_reg = CourseRegSerializer.setup_eager_loading(CourseReg.objects
                                                                      .filter(student=student.id))
+                cous = course_reg.filter(session=req['session']).first()
+                if cous is not None:
+                    level = cous.level.level
+                else:
+                    level = student.level.level
             except CourseReg.DoesNotExist:
                 course_reg = None
+                level = student.level.level
             course_to_major = CourseToMajorSerializer.setup_eager_loading(CourseToMajor.objects
                                                                           .filter(major=req['major'],
-                                                                                  level__level__lte=student.level.level)
+                                                                                  level__level__lte=level)
                                                                           )
 
             try:
@@ -81,7 +87,8 @@ def raw_result_and_cgpa_specific(request):
                 result = None
 
             std_result = CourseResultSerializer.setup_eager_loading(CourseResult.objects
-                                                                    .filter(student=student.id)
+                                                                    .filter(student=student.id,
+                                                                            level__level__lte=level)
                                                                     .exclude(final=None))
             std_result_fail = std_result.filter(status=0)
             fail = []
@@ -114,14 +121,16 @@ def raw_result_and_cgpa_specific(request):
                 except WavedCourses.DoesNotExist:
                     not_in_waving = True
                 try:
-                    result.get(course=course.course.id)
+                    std_result.get(course=course.course.id)
                     not_in_result = False
                 except CourseResult.DoesNotExist:
                     not_in_result = True
-                not_same_or_lower_level = course.level.level <= student.level.level
+
+                not_same_or_lower_level = course.level.level <= level
                 not_same_or_lower_semester = course.course.semester <= int(req['semester'])
 
-                if not_in_course_reg and not_in_waving and not_in_result and not_same_or_lower_level and not_same_or_lower_semester:
+                if (not_in_course_reg and not_in_waving and not_in_result and not_same_or_lower_level and
+                        not_same_or_lower_semester):
                     outstandings.append(course)
 
                 try:
@@ -129,7 +138,7 @@ def raw_result_and_cgpa_specific(request):
                 except CourseReg.DoesNotExist:
                     in_course_reg = False
                 try:
-                    no_result_final = result.get(course=course.course.id, final=None)
+                    no_result_final = std_result.get(course=course.course.id, final=None)
                 except CourseResult.DoesNotExist:
                     no_result_final = False
 
@@ -137,11 +146,12 @@ def raw_result_and_cgpa_specific(request):
                     outstandings.append(course)
 
             try:
-                gps = CourseResultGPASerializer.setup_eager_loading(CourseResultGPA.objects.filter(student=student.id)
+                gps = CourseResultGPASerializer.setup_eager_loading(CourseResultGPA.objects.filter(
+                    student=student.id, level__level__lte=level)
                                                                     .order_by('-session', '-semester'))
                 try:
                     last_gp = gps[0]
-                except:
+                except IndexError:
                     last_gp = CourseResultGPA()
                     last_gp.cgpa = 0
                     last_gp.gpa = 0
@@ -155,6 +165,7 @@ def raw_result_and_cgpa_specific(request):
                     gp_current = gps.get(session=req['session'], semester=req['semester'])
                     gp_curr = True
                 except CourseResultGPA.DoesNotExist:
+                    gp_current = CourseResultGPA()
                     gp_curr = False
 
                 if gp_curr:
@@ -170,7 +181,8 @@ def raw_result_and_cgpa_specific(request):
                         session2 = replace_str_index(session, 8, s2)
                         last_gp = gps.get(session__session=session2, semester=semester)
             
-                gps = CourseResultGPASerializer.setup_eager_loading(CourseResultGPA.objects.filter(student=student.id)
+                gps = CourseResultGPASerializer.setup_eager_loading(CourseResultGPA.objects.filter(
+                    student=student.id, level__level__lte=level)
                                                                     .order_by('session', 'semester'))
             except CourseResultGPA.DoesNotExist:
                 gps = []
