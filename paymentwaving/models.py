@@ -15,4 +15,4 @@ class WavedPayment(models.Model):
     payment_type = models.ForeignKey(PaymentType)
     student = models.ForeignKey(Student)
     level = models.ForeignKey(Level)
-    waved_by = models.ForeignKey(Bursar)
+    waved_by = models.ForeignKey(Bursar, null=True, blank=True)

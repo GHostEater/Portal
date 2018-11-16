@@ -7,6 +7,7 @@ from rest_framework.response import Response
 
 from accounts.models import Student
 from payment.models import Payment
+from paymentwaving.models import WavedPayment
 
 
 @api_view(['GET'])
@@ -24,5 +25,12 @@ def access_fee_restrict(request):
         paid = True
     except Payment.DoesNotExist:
         paid = False
+
+    try:
+        WavedPayment.objects.get(student=req['student'], payment_type__name="Portal Access Fee", level=student.level)
+        paid = True
+    except WavedPayment.DoesNotExist:
+        if paid:
+            paid = True
 
     return Response({'paid': paid})
