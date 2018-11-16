@@ -80,3 +80,21 @@ def my_callback(sender, instance, *args, **kwargs):
         old_password = None
     if new_password != old_password:
         instance.password = make_password(instance.password)
+
+
+# def create_profile(sender, **kwargs):
+#     if kwargs['created']:
+#         if kwargs['instance'].type == '2':
+#             AcademicAffairs.objects.create(user=kwargs['instance'])
+#         if kwargs['instance'].type == '3':
+#             Bursar.objects.create(user=kwargs['instance'])
+#         if kwargs['instance'].type == '4':
+#             StudentAffairs.objects.create(user=kwargs['instance'])
+#         if kwargs['instance'].type == '5':
+#             CollegeOfficer.objects.create(user=kwargs['instance'])
+#         if kwargs['instance'].type == '6':
+#             Lecturer.objects.create(user=kwargs['instance'])
+#         if kwargs['instance'].type == '8':
+#             Dean.objects.create(user=kwargs['instance'])
+#
+# post_save.connect(create_profile, sender=User)
