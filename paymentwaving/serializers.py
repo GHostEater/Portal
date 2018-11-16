@@ -21,9 +21,7 @@ class WavedPaymentSerializer(serializers.ModelSerializer):
             'student__level',
             'student__mode_of_entry',
             'waved_by',
-            'waved_by__user',
-            'waved_by__dept',
-            'waved_by__dept__college',
+            'waved_by__user'
         )
         return queryset
 

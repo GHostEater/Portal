@@ -25,4 +25,3 @@ def application_unpaid_list(request):
             std.append(app)
 
     return Response(ApplicationSerializer(std, many=True).data)
-
