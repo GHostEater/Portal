@@ -5,7 +5,11 @@
 {% block body %}
     <div class="row">
         <div class="col-sm-4 col-sm-offset-4 text-center">
-          <h3>{{ payment.status }}</h3>
+            {% if payment.paid == True %}
+                <h3>Transaction Approved</h3>
+            {% else %}
+                <h3>{{ payment.status }}</h3>
+            {% endif %}
           <p>By: {{ payment.student.user.last_name }}, {{ payment.student.user.first_name }} {{ payment.application.last_name }}, {{ payment.application.first_name }}</p>
           <p>Order ID: {{ payment.order_id }}</p>
           <p>Remita Retrieval Reference: {{ payment.rrr }}</p>
