@@ -39,4 +39,5 @@ class TuitionFee(models.Model):
     jme = models.BooleanField(default=False)
     de = models.BooleanField(default=False)
     conversion = models.BooleanField(default=False)
+    ft = models.BooleanField(default=True)
     pt = models.BooleanField(default=False)
