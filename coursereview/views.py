@@ -79,8 +79,11 @@ def course_review_restrict(request):
 
     for course in course_reg:
         try:
-            reviews.get(course=course.course)
-            done_reviews = True
+            reviews.filter(course=course.course)
+            if reviews.count() > 0:
+                done_reviews = True
+            else:
+                done_reviews = False
         except CourseReview.DoesNotExist:
             done_reviews = False
 

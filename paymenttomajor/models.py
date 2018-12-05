@@ -15,8 +15,9 @@ class PaymentToMajor(models.Model):
     jme = models.BooleanField(default=False)
     de = models.BooleanField(default=False)
     conversion = models.BooleanField(default=False)
+    ft = models.BooleanField(default=True)
     pt = models.BooleanField(default=False)
 
     def __str__(self):
         return str(str(self.payment_type)+str(self.major)+str(self.level)+" JME:"+str(self.jme)+" D/E:"+str(self.de) +
-                   " Conversion:"+str(self.conversion)+" Part Time:"+str(self.pt))
+                   " Conversion:"+str(self.conversion)+" Full Time:"+str(self.ft)+" Part Time:"+str(self.pt))
