@@ -40,12 +40,13 @@ def student_paid_list(request):
 
         if payment_type.tuition:
             tuition = TuitionFee()
-            if student.mode_of_entry.name == "JME":
-                tuition = TuitionFee.objects.get(major=student.major.id, jme=True)
-            if student.mode_of_entry.name == "D/E":
-                tuition = TuitionFee.objects.get(major=student.major.id, de=True)
-            if student.mode_of_entry.name == "D/E 300":
-                tuition = TuitionFee.objects.get(major=student.major.id, conversion=True)
+            if student.programme_type == "Full Time":
+                if student.mode_of_entry.name == "JME":
+                    tuition = TuitionFee.objects.get(major=student.major.id, jme=True, ft=True)
+                if student.mode_of_entry.name == "D/E":
+                    tuition = TuitionFee.objects.get(major=student.major.id, de=True, ft=True)
+                if student.mode_of_entry.name == "D/E 300":
+                    tuition = TuitionFee.objects.get(major=student.major.id, conversion=True, ft=True)
 
             if student.programme_type == "Part Time":
                 if student.mode_of_entry.name == "JME":

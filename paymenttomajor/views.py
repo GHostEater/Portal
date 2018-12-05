@@ -48,21 +48,29 @@ def student_payment_unedited(request):
     student = Student.objects.get(pk=data['student'])
     payment_to_major = PaymentToMajor()
 
-    if student.mode_of_entry.name == "JME":
-        payment_to_major = PaymentToMajor.objects.filter(major=student.major.id,
-                                                         jme=True,
-                                                         level__level__lte=student.level.level)
-        payment_to_major = payment_to_major.filter(Q(payment_type__sex=student.user.sex) | Q(payment_type__sex="Both"))
-    if student.mode_of_entry.name == "D/E":
-        payment_to_major = PaymentToMajor.objects.filter(major=student.major.id,
-                                                         de=True,
-                                                         level__level__lte=student.level.level)
-        payment_to_major = payment_to_major.filter(Q(payment_type__sex=student.user.sex) | Q(payment_type__sex="Both"))
-    if student.mode_of_entry.name == "D/E 300":
-        payment_to_major = PaymentToMajor.objects.filter(major=student.major.id,
-                                                         conversion=True,
-                                                         level__level__lte=student.level.level)
-        payment_to_major = payment_to_major.filter(Q(payment_type__sex=student.user.sex) | Q(payment_type__sex="Both"))
+    if student.programme_type == "Full Time":
+        if student.mode_of_entry.name == "JME":
+            payment_to_major = PaymentToMajor.objects.filter(major=student.major.id,
+                                                             jme=True,
+                                                             ft=True,
+                                                             level__level__lte=student.level.level)
+            payment_to_major = payment_to_major.filter(
+                Q(payment_type__sex=student.user.sex) | Q(payment_type__sex="Both"))
+        if student.mode_of_entry.name == "D/E":
+            payment_to_major = PaymentToMajor.objects.filter(major=student.major.id,
+                                                             de=True,
+                                                             ft=True,
+                                                             level__level__lte=student.level.level)
+            payment_to_major = payment_to_major.filter(
+                Q(payment_type__sex=student.user.sex) | Q(payment_type__sex="Both"))
+        if student.mode_of_entry.name == "D/E 300":
+            payment_to_major = PaymentToMajor.objects.filter(major=student.major.id,
+                                                             conversion=True,
+                                                             ft=True,
+                                                             level__level__lte=student.level.level)
+            payment_to_major = payment_to_major.filter(
+                Q(payment_type__sex=student.user.sex) | Q(payment_type__sex="Both"))
+
     if student.programme_type == "Part Time":
         if student.mode_of_entry.name == "JME":
             payment_to_major = PaymentToMajor.objects.filter(major=student.major.id,
@@ -97,21 +105,29 @@ def student_payment(request):
     student = Student.objects.get(pk=req['student'])
     payment_to_major = PaymentToMajor()
 
-    if student.mode_of_entry.name == "JME":
-        payment_to_major = PaymentToMajor.objects.filter(major=student.major.id,
-                                                         jme=True,
-                                                         level__level__lte=student.level.level)
-        payment_to_major = payment_to_major.filter(Q(payment_type__sex=student.user.sex) | Q(payment_type__sex="Both"))
-    if student.mode_of_entry.name == "D/E":
-        payment_to_major = PaymentToMajor.objects.filter(major=student.major.id,
-                                                         de=True,
-                                                         level__level__lte=student.level.level)
-        payment_to_major = payment_to_major.filter(Q(payment_type__sex=student.user.sex) | Q(payment_type__sex="Both"))
-    if student.mode_of_entry.name == "D/E 300":
-        payment_to_major = PaymentToMajor.objects.filter(major=student.major.id,
-                                                         conversion=True,
-                                                         level__level__lte=student.level.level)
-        payment_to_major = payment_to_major.filter(Q(payment_type__sex=student.user.sex) | Q(payment_type__sex="Both"))
+    if student.programme_type == "Full Time":
+        if student.mode_of_entry.name == "JME":
+            payment_to_major = PaymentToMajor.objects.filter(major=student.major.id,
+                                                             jme=True,
+                                                             ft=True,
+                                                             level__level__lte=student.level.level)
+            payment_to_major = payment_to_major.filter(
+                Q(payment_type__sex=student.user.sex) | Q(payment_type__sex="Both"))
+        if student.mode_of_entry.name == "D/E":
+            payment_to_major = PaymentToMajor.objects.filter(major=student.major.id,
+                                                             de=True,
+                                                             ft=True,
+                                                             level__level__lte=student.level.level)
+            payment_to_major = payment_to_major.filter(
+                Q(payment_type__sex=student.user.sex) | Q(payment_type__sex="Both"))
+        if student.mode_of_entry.name == "D/E 300":
+            payment_to_major = PaymentToMajor.objects.filter(major=student.major.id,
+                                                             conversion=True,
+                                                             ft=True,
+                                                             level__level__lte=student.level.level)
+            payment_to_major = payment_to_major.filter(
+                Q(payment_type__sex=student.user.sex) | Q(payment_type__sex="Both"))
+
     if student.programme_type == "Part Time":
         if student.mode_of_entry.name == "JME":
             payment_to_major = PaymentToMajor.objects.filter(major=student.major.id,
