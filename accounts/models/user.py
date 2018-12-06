@@ -66,6 +66,8 @@ class User(AbstractUser):
     profile_rank = models.IntegerField(null=True, blank=True)
     title = models.CharField(max_length=255, null=True, blank=True)
     img = models.ImageField(null=True, blank=True)
+    sign = models.ImageField(null=True, blank=True)
+    mail_prefix = models.CharField(max_length=255, null=True, blank=True)
 
     def __str__(self):
         return str(self.last_name+", "+self.first_name+" "+self.username+" User Type:"+self.type)
