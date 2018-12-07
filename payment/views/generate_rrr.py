@@ -23,14 +23,16 @@ def generate_rrr(request):
 
     matric_no = ''
     dept = ''
-    level = Level()
 
-    if hasattr(req, 'matricNo'):
+    if request.POST.get('matricNo'):
         matric_no = req['matricNo']
-    if hasattr(req, 'dept'):
+    if request.POST.get('dept'):
         dept = req['dept']
-    if hasattr(req, 'level'):
+    if request.POST.get('level'):
         level = Level.objects.get(pk=req['level'])
+    else:
+        level = Level()
+        level.level = ''
 
     student = Student.objects.get(pk=req['student'])
     payment_type = PaymentType.objects.get(pk=req['payment_type'])
@@ -40,7 +42,8 @@ def generate_rrr(request):
     payment.payment_type = payment_type
     payment.student = student
     payment.session = session
-    payment.level = level
+    if level.level != '':
+        payment.level = level
     payment.order_id = req['order_id']
     payment.status = req['status']
     payment.date = req['date']
