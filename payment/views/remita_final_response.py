@@ -4,11 +4,13 @@ from __future__ import unicode_literals
 import hashlib
 import json
 
+import datetime
 import requests
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 
 from payment.models import Payment
+from systemlog.models import Log
 
 
 @csrf_exempt
@@ -36,6 +38,15 @@ def remita_final_response(request):
         payment.status = status
         payment.amount = data['amount']
         payment.save()
+
+        if payment.student:
+            log = Log()
+            log.user = payment.student.user.last_name + ", " + payment.student.user.first_name
+            log.action = "Paid For " + payment.payment_type.name
+            log.role = "Student"
+            log.location = "System"
+            log.date = datetime.datetime.now()
+            log.save()
     else:
         payment.status = status
         payment.paid = False

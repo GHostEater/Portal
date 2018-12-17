@@ -2,7 +2,7 @@
 <h3>Department: {{ gpa.student.major.dept.name }}</h3>
 <h3>Major: {{ gpa.student.major.name }}</h3>
 <h3>Level: {{ gpa.student.level.level }}</h3>
-<h3>Programme: BSc.{% if gpa.student.major.dept.college.acronym is "COMAS" %}&nbsp(Hons.)&nbsp{% endif %} {{ gpa.student.major.name }}</h3>
+<h3>Programme: {{ gpa.student.major.degree }} {{ gpa.student.major.name }}</h3>
 
 <table>
   <thead>

@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.humanize',
     'rest_framework',
     'corsheaders',
     'debug_toolbar',
@@ -60,6 +61,7 @@ INSTALLED_APPS = [
     'courseresult',
     'courseresultgpa',
     'courseresulteditrequest',
+    'courseresultuploadlog',
     'coursewaving',
     'systemlog',
     'latereg',
@@ -79,7 +81,7 @@ INSTALLED_APPS = [
     'voting',
     'transcript',
     'grade',
-    'courseresultuploadlog',
+    'transfer',
 ]
 
 MIDDLEWARE = [

@@ -7,4 +7,16 @@ from coursetomajor.models import CourseToMajor
 
 # Register your models here.
 
-admin.site.register(CourseToMajor)
+
+class CourseToMajorAdmin(admin.ModelAdmin):
+    list_display = ("course", "major", 'level')
+    search_fields = (
+        "course__title",
+        "course__code",
+        'major__name',
+        'major__dept__name',
+        'major__dept__college_name',
+        'level__level',
+    )
+
+admin.site.register(CourseToMajor, CourseToMajorAdmin)

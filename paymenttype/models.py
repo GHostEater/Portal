@@ -26,6 +26,7 @@ class PaymentType(models.Model):
     tuition = models.BooleanField(default=False)
     sex = models.CharField(max_length=256, default="Both", choices=sex_choices)
     incur_charges = models.BooleanField(default=True)
+    tag = models.CharField(max_length=256, null=True, blank=True)
 
     def __str__(self):
         return str(self.name+" "+str(self.amount))
