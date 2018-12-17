@@ -62,6 +62,7 @@ urlpatterns = [
     url(r'^api/', include('coursereview.urls')),
     url(r'^api/', include('voting.urls')),
     url(r'^api/', include('transcript.urls')),
+    url(r'^api/', include('transfer.urls')),
     url(r'^api/', include('courseresultuploadlog.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
