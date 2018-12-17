@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 from course.models import Course
-from accounts.models import Student
+from accounts.models import Student, User
 from level.models import Level
 from session.models import Session
 
@@ -17,3 +17,13 @@ class CourseReg(models.Model):
     student = models.ForeignKey(Student)
     level = models.ForeignKey(Level)
     session = models.ForeignKey(Session)
+
+
+class ExtraUnitRequest(models.Model):
+    student = models.ForeignKey(Student)
+    session = models.ForeignKey(Session)
+    semester = models.IntegerField()
+    status = models.IntegerField()
+    units = models.IntegerField()
+    date = models.DateTimeField()
+    handled_by = models.ForeignKey(User, null=True, blank=True)

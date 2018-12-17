@@ -4,12 +4,15 @@ from __future__ import unicode_literals
 import datetime
 
 from django.db import IntegrityError
+from django.db.models import Q
 from django.http import JsonResponse
+from django.template.loader import get_template
+from mailqueue.models import MailerMessage
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from rest_framework.views import APIView
-from rest_framework.generics import ListAPIView, RetrieveUpdateAPIView
+from rest_framework.generics import ListAPIView, RetrieveUpdateAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from accounts.serializers import (
@@ -62,6 +65,15 @@ class UserAPIView(ListAPIView):
 
 class UserDetailAPIView(RetrieveUpdateAPIView):
     serializer_class = UserSerializer
+
+    def get_queryset(self):
+        queryset = User.objects.all()
+        return queryset
+
+
+class UserEmailAPIView(RetrieveAPIView):
+    serializer_class = UserSerializer
+    lookup_field = 'email'
 
     def get_queryset(self):
         queryset = User.objects.all()
@@ -229,6 +241,19 @@ def student_upload(request):
     return Response({'processed': processed})
 
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def student_graduate(request):
+    req = request.data
+
+    for d in req:
+        student = Student.objects.get(pk=d['id'])
+        student.status = '8'
+        student.save()
+
+    return Response({})
+
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def student_auto_withdraw(request):
@@ -255,3 +280,34 @@ def student_auto_withdraw(request):
             if i == 2:
                 continue
     return Response({})
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def pass_reset(request):
+    req = request.data
+    try:
+        user = User.objects.get(Q(email__iexact=req['email']) | Q(username__iexact=req['email']))
+        if user:
+            user_exists = True
+        else:
+            user_exists = False
+        link = req['link']
+
+        template = get_template('pass_reset.html')
+        context = {'link': link, 'user': user}
+        content = template.render(context)
+
+        message = MailerMessage()
+        message.subject = str("Password Reset from " + req['school_med_name'])
+        message.to_address = user.email
+        message.bcc_address = req['sender_email']
+        message.from_address = req['sender_email']
+        message.content = ""
+        message.html_content = content
+        message.app = req['school_med_name'] + " Mailing System"
+        message.save()
+    except User.DoesNotExist:
+        user_exists = False
+
+    return Response({'user_exists': user_exists})
