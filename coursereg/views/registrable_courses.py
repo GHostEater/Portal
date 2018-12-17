@@ -7,6 +7,7 @@ from rest_framework.response import Response
 
 from accounts.models import Student
 from coursereg.models import CourseReg
+from coursereg.serializers import CourseRegSerializer
 from courseresult.models import CourseResult
 from coursetomajor.models import CourseToMajor
 from coursetomajor.serializers import CourseToMajorSerializer
@@ -79,4 +80,5 @@ def registrable_courses(request):
             outstandings.append(c)
 
     return Response({"courses": CourseToMajorSerializer(courses, many=True).data,
+                     "reg_courses": CourseRegSerializer(registered_courses, many=True).data,
                      "outstandings": CourseToMajorSerializer(outstandings, many=True).data})

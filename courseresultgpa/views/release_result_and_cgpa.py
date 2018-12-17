@@ -45,15 +45,15 @@ def release_result_and_cgpa(request):
 
         message = MailerMessage()
         message.subject = str("Results and CGPA for "+gpa.student.user.last_name+", "+gpa.student.user.first_name +
-                              " from Fountain University")
+                              " from "+req['school_med_name'])
         message.to_address = gpa.student.user.email
         if gpa.student.parent_email is not None:
             message.cc_address = gpa.student.parent_email
-        message.bcc_address = 'results@fuo.edu.ng'
-        message.from_address = 'results@fuo.edu.ng'
+        message.bcc_address = req['sender_email']
+        message.from_address = req['sender_email']
         message.content = ""
         message.html_content = content
-        message.app = "Fountain University Mailing System"
+        message.app = req['school_med_name']+" Mailing System"
         message.save()
 
     return Response({'ok': 'ok'})

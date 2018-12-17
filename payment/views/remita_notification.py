@@ -4,12 +4,14 @@ from __future__ import unicode_literals
 import hashlib
 import json
 
+import datetime
 import requests
 from django.db import IntegrityError
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 from payment.models import Payment
+from systemlog.models import Log
 
 
 @api_view(['POST'])
@@ -44,6 +46,14 @@ def remita_notification(request):
                     pr += 1
                 except IntegrityError:
                     fail += 1
+                if payment.student:
+                    log = Log()
+                    log.user = payment.student.user.last_name + ", " + payment.student.user.first_name
+                    log.action = "Paid For " + payment.payment_type.name
+                    log.role = "Student"
+                    log.location = "System"
+                    log.date = datetime.datetime.now()
+                    log.save()
             else:
                 payment.status = dat['message']
                 payment.amount = dat['amount']
@@ -88,6 +98,14 @@ def remita_notification(request):
                 pr += 1
             except IntegrityError:
                 fail += 1
+            if payment.student:
+                log = Log()
+                log.user = payment.student.user.last_name + ", " + payment.student.user.first_name
+                log.action = "Paid For " + payment.payment_type.name
+                log.role = "Student"
+                log.location = "System"
+                log.date = datetime.datetime.now()
+                log.save()
         else:
             payment.status = dat['message']
             payment.amount = dat['amount']

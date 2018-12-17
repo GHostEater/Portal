@@ -12,3 +12,10 @@ class Grade(models.Model):
     upper_limit = models.FloatField()
     gp = models.IntegerField()
     active = models.BooleanField(default=True)
+
+
+class GradePoint(models.Model):
+    grade = models.CharField(max_length=255)
+    lower_limit = models.FloatField()
+    upper_limit = models.FloatField()
+    active = models.BooleanField(default=True)

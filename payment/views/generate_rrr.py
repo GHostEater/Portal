@@ -8,7 +8,9 @@ import requests
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+import transcript.models
 from accounts.models import Student
+from admission.models import Application
 from level.models import Level
 from payment.models import Payment
 from payment.serializers import PaymentSerializer
@@ -23,24 +25,40 @@ def generate_rrr(request):
 
     matric_no = ''
     dept = ''
+    level = ''
+    student = None
+    app = None
+    trans_app = None
 
-    if request.POST.get('matricNo'):
+    if request.data.get('matricNo'):
         matric_no = req['matricNo']
-    if request.POST.get('dept'):
+    if request.data.get('dept'):
         dept = req['dept']
-    if request.POST.get('level'):
+
+    if request.data.get('level'):
         level = Level.objects.get(pk=req['level'])
     else:
         level = Level()
         level.level = ''
 
-    student = Student.objects.get(pk=req['student'])
+    if request.data.get('student'):
+        student = Student.objects.get(pk=req['student'])
+    if request.data.get('application'):
+        app = Application.objects.get(pk=req['application'])
+    if request.data.get('transcript_app'):
+        trans_app = transcript.models.Application.objects.get(pk=req['transcript_app'])
+
     payment_type = PaymentType.objects.get(pk=req['payment_type'])
     session = Session.objects.get(pk=req['session'])
 
     payment = Payment()
     payment.payment_type = payment_type
-    payment.student = student
+    if student is not None:
+        payment.student = student
+    if app is not None:
+        payment.application = app
+    if trans_app is not None:
+        payment.transcript_app = trans_app
     payment.session = session
     if level.level != '':
         payment.level = level
@@ -91,7 +109,6 @@ def generate_rrr(request):
         }
 
     r = requests.post(url=gen_rrr, headers=header, json=request)
-    print r.text
 
     data = json.loads(r.text.split("(")[1].strip(")"))
     status = data['status']

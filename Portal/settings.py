@@ -81,6 +81,7 @@ INSTALLED_APPS = [
     'voting',
     'transcript',
     'grade',
+    'transfer',
 ]
 
 MIDDLEWARE = [
