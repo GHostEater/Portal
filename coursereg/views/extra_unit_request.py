@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveDestroyAPIView
+from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 
 from coursereg.models import ExtraUnitRequest
@@ -27,7 +27,7 @@ class ExtraUnitRequestCreateAPIView(CreateAPIView):
         return queryset
 
 
-class ExtraUnitRequestDetailAPIView(RetrieveDestroyAPIView):
+class ExtraUnitRequestDetailAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = ExtraUnitRequestSerializer
     permission_classes = [IsAuthenticated]
 
