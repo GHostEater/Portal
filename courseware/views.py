@@ -27,6 +27,15 @@ class CoursewareDeptAPIView(ListAPIView):
         return queryset
 
 
+class CoursewareUserAPIView(ListAPIView):
+    serializer_class = CoursewareSerializer
+
+    def get_queryset(self):
+        queryset = Courseware.objects.filter(uploaded_by=self.request.GET['user'])
+        queryset = self.get_serializer_class().setup_eager_loading(queryset)
+        return queryset
+
+
 class CoursewareCreateAPIView(CreateAPIView):
     serializer_class = CoursewareCreateSerializer
     permission_classes = [IsAuthenticated]
