@@ -20,7 +20,7 @@ class StudentAdmin(admin.ModelAdmin):
     search_fields = (
         "major__name",
         "major__dept__name",
-        "major___dept__college__name",
+        "major__dept__college__name",
         "user__username",
         "user__last_name",
         "user__first_name",
