@@ -12,7 +12,7 @@ class PaymentAdmin(admin.ModelAdmin):
                     'date', 'status', 'paid', 'amount')
     search_fields = ('payment_type__name',
                      'student__user__username',
-                     'student__user__last_name'
+                     'student__user__last_name',
                      'student__user__first_name',
                      'application__first_name',
                      'application__last_name',
