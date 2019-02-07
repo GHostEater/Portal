@@ -115,10 +115,9 @@ def raw_result_and_cgpa(request):
                     not_in_waving = False
                 except WavedCourses.DoesNotExist:
                     not_in_waving = True
-                try:
-                    std_result.get(course=course.course.id)
+                if std_result.filter(course=course.course.id).count() > 0:
                     not_in_result = False
-                except CourseResult.DoesNotExist:
+                else:
                     not_in_result = True
 
                 not_same_or_lower_level = course.level.level <= level

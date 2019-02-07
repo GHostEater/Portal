@@ -31,3 +31,8 @@ class CourseResult(models.Model):
 
 class ReleaseStatus(models.Model):
     status = models.BooleanField(default=False)
+
+
+class UploadStatus(models.Model):
+    ca = models.BooleanField(default=False)
+    exam = models.BooleanField(default=False)

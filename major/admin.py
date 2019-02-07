@@ -3,8 +3,9 @@ from __future__ import unicode_literals
 
 from django.contrib import admin
 
+from accounts.admin import admin_site
 from major.models import Major
 
 # Register your models here.
 
-admin.site.register(Major)
+admin_site.register(Major)

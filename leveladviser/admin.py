@@ -2,8 +2,10 @@
 from __future__ import unicode_literals
 
 from django.contrib import admin
+
+from accounts.admin import admin_site
 from leveladviser.models import LevelAdviser
 
 # Register your models here.
 
-admin.site.register(LevelAdviser)
+admin_site.register(LevelAdviser)

@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.contrib import admin
 
+from accounts.admin import admin_site
 from paymentwaving.models import WavedPayment
 
 # Register your models here.
@@ -20,4 +21,4 @@ class WavedPaymentAdmin(admin.ModelAdmin):
                      )
 
 
-admin.site.register(WavedPayment, WavedPaymentAdmin)
+admin_site.register(WavedPayment, WavedPaymentAdmin)

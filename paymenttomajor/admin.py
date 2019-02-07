@@ -2,6 +2,8 @@
 from __future__ import unicode_literals
 
 from django.contrib import admin
+
+from accounts.admin import admin_site
 from paymenttomajor.models import PaymentToMajor
 
 # Register your models here.
@@ -22,4 +24,4 @@ class PaymentToMajorAdmin(admin.ModelAdmin):
                      )
 
 
-admin.site.register(PaymentToMajor, PaymentToMajorAdmin)
+admin_site.register(PaymentToMajor, PaymentToMajorAdmin)

@@ -14,4 +14,6 @@ urlpatterns = [
     url(r'^result/edit-ca/$', views.edit_ca),
 
     url(r'^release-status/(?P<pk>[0-9]+)/$', views.ReleaseStatusAPIView.as_view()),
+
+    url(r'^upload-status/(?P<pk>[0-9]+)/$', views.UploadStatusAPIView.as_view()),
 ]
