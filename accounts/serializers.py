@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from accounts.models import User, Student, CollegeOfficer, StudentAffairs, Lecturer, Dean, Unit
+from accounts.models import User, Student, CollegeOfficer, StudentAffairs, Lecturer, Dean, Unit, Bursar
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -115,6 +115,12 @@ class StudentSerializer(serializers.ModelSerializer):
 class StudentCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
+        fields = '__all__'
+
+
+class BursarSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Bursar
         fields = '__all__'
 
 

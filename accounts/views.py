@@ -23,9 +23,9 @@ from accounts.serializers import (
     StudentAffairsSerializer,
     LecturerSerializer,
     DeanSerializer,
-    UnitSerializer
-)
-from accounts.models import Student, User, CollegeOfficer, StudentAffairs, Lecturer, Dean, Unit
+    UnitSerializer,
+    BursarSerializer)
+from accounts.models import Student, User, CollegeOfficer, StudentAffairs, Lecturer, Dean, Unit, Bursar
 from courseresultgpa.models import CourseResultGPA
 from systemlog.models import Log
 from level.models import Level
@@ -113,6 +113,17 @@ class CollegeOfficerDetailAPIView(RetrieveUpdateAPIView):
         queryset = CollegeOfficer.objects.all()
         queryset = self.get_serializer_class().setup_eager_loading(queryset)
         return queryset
+
+
+class BursarAPIView(ListAPIView):
+    serializer_class = BursarSerializer
+    queryset = Bursar.objects.all()
+
+
+class BursarDetailAPIView(RetrieveUpdateAPIView):
+    serializer_class = BursarSerializer
+    lookup_field = 'user'
+    queryset = Bursar.objects.all()
 
 
 class StudentAffairsAPIView(ListAPIView):
