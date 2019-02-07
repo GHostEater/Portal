@@ -27,6 +27,9 @@ urlpatterns = [
     url(r'^college-officer/$', views.CollegeOfficerAPIView.as_view(), name='college_officer'),
     url(r'^college-officer/(?P<user>[0-9]+)/$', views.CollegeOfficerDetailAPIView.as_view()),
 
+    url(r'^bursar/$', views.BursarAPIView.as_view()),
+    url(r'^bursar/(?P<user>[0-9]+)/$', views.BursarDetailAPIView.as_view()),
+
     url(r'^dean/$', views.DeanAPIView.as_view()),
     url(r'^dean/(?P<user>[0-9]+)/$', views.DeanDetailAPIView.as_view()),
 
