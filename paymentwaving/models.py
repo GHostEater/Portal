@@ -5,7 +5,7 @@ from django.db import models
 
 from level.models import Level
 from paymenttype.models import PaymentType
-from accounts.models import Student, User
+from accounts.models import Student, User, Bursar
 
 
 # Create your models here.
@@ -15,4 +15,4 @@ class WavedPayment(models.Model):
     payment_type = models.ForeignKey(PaymentType)
     student = models.ForeignKey(Student)
     level = models.ForeignKey(Level)
-    waved_by = models.ForeignKey(User, null=True, blank=True)
+    waved_by = models.ForeignKey(Bursar, null=True, blank=True)
