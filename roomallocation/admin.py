@@ -3,9 +3,10 @@ from __future__ import unicode_literals
 
 from django.contrib import admin
 
+from accounts.admin import admin_site
 from roomallocation.models import RoomAllocation
 
 # Register your models here.
 
 
-admin.site.register(RoomAllocation)
+admin_site.register(RoomAllocation)

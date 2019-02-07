@@ -2,6 +2,8 @@
 from __future__ import unicode_literals
 
 from django.contrib import admin
+
+from accounts.admin import admin_site
 from coursewaving.models import WavedCourses
 
 # Register your models here.
@@ -10,4 +12,4 @@ from coursewaving.models import WavedCourses
 class WavedCoursesAdmin(admin.ModelAdmin):
     list_display = ("student", "course", 'waved_by')
 
-admin.site.register(WavedCourses, WavedCoursesAdmin)
+admin_site.register(WavedCourses, WavedCoursesAdmin)

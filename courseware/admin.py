@@ -2,8 +2,10 @@
 from __future__ import unicode_literals
 
 from django.contrib import admin
+
+from accounts.admin import admin_site
 from courseware.models import Courseware
 
 # Register your models here.
 
-admin.site.register(Courseware)
+admin_site.register(Courseware)

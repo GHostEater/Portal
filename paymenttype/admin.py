@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.contrib import admin
 
+from accounts.admin import admin_site
 from paymenttype.models import PaymentType, TuitionFee
 
 
@@ -18,5 +19,5 @@ class PaymentTypeAdmin(admin.ModelAdmin):
 class TuitionFeeAdmin(admin.ModelAdmin):
     list_display = ('major', 'first', 'second', 'total', 'jme', 'de', 'conversion', 'pt')
 
-admin.site.register(PaymentType, PaymentTypeAdmin)
-admin.site.register(TuitionFee, TuitionFeeAdmin)
+admin_site.register(PaymentType, PaymentTypeAdmin)
+admin_site.register(TuitionFee, TuitionFeeAdmin)

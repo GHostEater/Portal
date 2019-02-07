@@ -14,16 +14,17 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url, include
-from django.contrib import admin
 from django.conf import settings
 
 import debug_toolbar
 
 from django.conf.urls.static import static
 
+from accounts.admin import admin_site
+
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
+    url(r'^admin/', admin_site.urls),
     url(r'^', include('core.urls')),
     url(r'^mail-queue/', include('mailqueue.urls')),
     url(r'^api/', include('accounts.urls')),
@@ -65,6 +66,7 @@ urlpatterns = [
     url(r'^api/', include('transfer.urls')),
     url(r'^api/', include('courseresultuploadlog.urls')),
     url(r'^api/', include('grade.urls')),
+    url(r'^api/', include('sysinfo.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
