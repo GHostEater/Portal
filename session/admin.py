@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.contrib import admin
 
+from accounts.admin import admin_site
 from session.models import Session
 
 # Register your models here.
@@ -11,4 +12,4 @@ from session.models import Session
 class SessionAdmin(admin.ModelAdmin):
     list_display = ("session", "is_current", "is_admission", "actions")
     
-admin.site.register(Session, SessionAdmin)
+admin_site.register(Session, SessionAdmin)

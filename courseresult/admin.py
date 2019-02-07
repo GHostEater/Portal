@@ -2,7 +2,9 @@
 from __future__ import unicode_literals
 
 from django.contrib import admin
-from courseresult.models import CourseResult, ReleaseStatus
+
+from accounts.admin import admin_site
+from courseresult.models import CourseResult, ReleaseStatus, UploadStatus
 
 
 # Register your models here.
@@ -25,5 +27,6 @@ class CourseResultAdmin(admin.ModelAdmin):
                      "rel",
                      "status",)
 
-admin.site.register(CourseResult, CourseResultAdmin)
-admin.site.register(ReleaseStatus)
+admin_site.register(CourseResult, CourseResultAdmin)
+admin_site.register(ReleaseStatus)
+admin_site.register(UploadStatus)

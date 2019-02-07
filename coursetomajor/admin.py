@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.contrib import admin
 
+from accounts.admin import admin_site
 from coursetomajor.models import CourseToMajor
 
 # Register your models here.
@@ -19,4 +20,4 @@ class CourseToMajorAdmin(admin.ModelAdmin):
         'level__level',
     )
 
-admin.site.register(CourseToMajor, CourseToMajorAdmin)
+admin_site.register(CourseToMajor, CourseToMajorAdmin)

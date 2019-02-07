@@ -2,6 +2,8 @@
 from __future__ import unicode_literals
 
 from django.contrib import admin
+
+from accounts.admin import admin_site
 from payment.models import Payment
 
 # Register your models here.
@@ -23,4 +25,4 @@ class PaymentAdmin(admin.ModelAdmin):
                      'order_id', 'rrr', 'date', 'status', 'paid', 'amount')
 
 
-admin.site.register(Payment, PaymentAdmin)
+admin_site.register(Payment, PaymentAdmin)

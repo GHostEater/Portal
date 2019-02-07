@@ -3,6 +3,7 @@ from course_result_course import CourseResultCourseAPIView
 from course_result_dept import CourseResultDeptAPIView
 from course_result_student import CourseResultStudentAPIView
 from release_status import ReleaseStatusAPIView
+from upload_status import UploadStatusAPIView
 from upload_ca import upload_ca
 from upload_exam import upload_exam
 from edit_ca import edit_ca

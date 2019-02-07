@@ -82,6 +82,7 @@ INSTALLED_APPS = [
     'transcript',
     'grade',
     'transfer',
+    'sysinfo',
 ]
 
 MIDDLEWARE = [

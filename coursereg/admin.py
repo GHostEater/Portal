@@ -2,6 +2,8 @@
 from __future__ import unicode_literals
 
 from django.contrib import admin
+
+from accounts.admin import admin_site
 from coursereg.models import CourseReg, ExtraUnitRequest
 
 
@@ -24,5 +26,5 @@ class ExtraUnitRequestAdmin(admin.ModelAdmin):
     list_display = ("student", "session", "semester", "status", "units", "date", "handled_by")
 
 
-admin.site.register(CourseReg, CourseRegAdmin)
-admin.site.register(ExtraUnitRequest, ExtraUnitRequestAdmin)
+admin_site.register(CourseReg, CourseRegAdmin)
+admin_site.register(ExtraUnitRequest, ExtraUnitRequestAdmin)
