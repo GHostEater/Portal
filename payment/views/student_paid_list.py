@@ -7,7 +7,9 @@ from rest_framework.response import Response
 
 from accounts.models import Student
 from accounts.serializers import StudentSerializer
+from courseresult.models import CourseResult
 from payment.models import Payment
+from payment.serializers import PaymentSerializer
 from paymenttype.models import PaymentType, TuitionFee
 from paymentwaving.models import WavedPayment
 
@@ -22,8 +24,35 @@ def student_paid_list(request):
         'p_second': False,
         'p_total': False
     }
+    college = ''
+    dept = ''
+    major = ''
+    level = ''
+    if request.GET.get('college'):
+        college = req['college']
+    if request.GET.get('dept'):
+        dept = req['dept']
+    if request.GET.get('major'):
+        major = req['major']
+    if request.GET.get('level'):
+        level = req['level']
 
-    students = Student.objects.filter(major=req['major'], level=req['level'])
+    if college == '' and dept == '' and major == '' and level == '':
+        students = Student.objects.all().exclude(status='8')
+    if college == '' and dept == '' and major == '' and level != '':
+        students = Student.objects.filter(level=level)
+    if college != '' and dept == '' and major == '' and level == '':
+        students = Student.objects.filter(major__dept__college=college)
+    if college != '' and dept == '' and major == '' and level != '':
+        students = Student.objects.filter(major__dept__college=college, level=level)
+    if dept != '' and major == '' and level == '':
+        students = Student.objects.filter(major__dept=dept)
+    if dept != '' and major == '' and level != '':
+        students = Student.objects.filter(major__dept=dept, level=level)
+    if major != '' and level == '':
+        students = Student.objects.filter(major=major)
+    if major != '' and level != '':
+        students = Student.objects.filter(major=major, level=level)
 
     for student in students:
         payment_type = PaymentType.objects.get(pk=req['payment_type'])
@@ -60,8 +89,10 @@ def student_paid_list(request):
                                                session=req['session'])
             try:
                 level = tuition_payments[0].level.level
+                date = tuition_payments[0].date
             except IndexError:
                 level = ''
+                date = ''
             t_payments_total = 0
             for pay in tuition_payments:
                 t_payments_total += pay.amount
@@ -79,6 +110,8 @@ def student_paid_list(request):
                 'amount': t_payments_total,
                 'level': level,
                 'owing': tuition.total - t_payments_total,
+                'date': date,
+                'payments': PaymentSerializer(tuition_payments, many=True).data,
             }
             if pay_status['p_total']:
                 response.append(obj)
@@ -97,7 +130,7 @@ def student_paid_list(request):
                 'student': StudentSerializer(student).data,
                 'waved': True,
                 'amount': waved_payment.payment_type.amount,
-                'level': waved_payment.level
+                'level': waved_payment.level.level
             }
             response.append(obj)
 
@@ -114,7 +147,9 @@ def student_paid_list(request):
                     'paid': payment.paid,
                     'amount': payment.amount,
                     'level': payment.level.level,
-                    'owing': owing
+                    'owing': owing,
+                    'date': payment.date,
+                    'rrr': payment.rrr
                 }
                 response.append(obj)
     
