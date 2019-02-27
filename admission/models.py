@@ -48,6 +48,7 @@ class Application(models.Model):
         ('UTME Candidate', 'UTME Candidate'),
         ('Transfer', 'Transfer'),
         ('Direct Entry', 'Direct Entry'),
+        ('Conversion', 'Conversion'),
     )
     residence_choices = (
         ('Residential', 'Residential'),

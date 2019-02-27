@@ -11,7 +11,8 @@ from courseresult.models import CourseResult
 class Request(models.Model):
     lecturer = models.ForeignKey(Lecturer)
     status = models.IntegerField()
-    date = models.DateTimeField(null=True)
+    date = models.DateTimeField(null=True, blank=True)
+    end_date = models.DateTimeField(null=True, blank=True)
     handled_by = models.ForeignKey(User, null=True, blank=True)
 
 

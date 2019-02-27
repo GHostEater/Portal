@@ -22,8 +22,35 @@ def student_unpaid_list(request):
         'p_second': False,
         'p_total': False
     }
-    
-    students = Student.objects.filter(major=req['major'], level=req['level'])
+    college = ''
+    dept = ''
+    major = ''
+    level = ''
+    if request.GET.get('college'):
+        college = req['college']
+    if request.GET.get('dept'):
+        dept = req['dept']
+    if request.GET.get('major'):
+        major = req['major']
+    if request.GET.get('level'):
+        level = req['level']
+
+    if college == '' and dept == '' and major == '' and level == '':
+        students = Student.objects.all().exclude(status='8')
+    if college == '' and dept == '' and major == '' and level != '':
+        students = Student.objects.filter(level=level)
+    if college != '' and dept == '' and major == '' and level == '':
+        students = Student.objects.filter(major__dept__college=college)
+    if college != '' and dept == '' and major == '' and level != '':
+        students = Student.objects.filter(major__dept__college=college, level=level)
+    if dept != '' and major == '' and level == '':
+        students = Student.objects.filter(major__dept=dept)
+    if dept != '' and major == '' and level != '':
+        students = Student.objects.filter(major__dept=dept, level=level)
+    if major != '' and level == '':
+        students = Student.objects.filter(major=major)
+    if major != '' and level != '':
+        students = Student.objects.filter(major=major, level=level)
     
     for student in students:
         payment_type = PaymentType.objects.get(pk=req['payment_type'])

@@ -25,7 +25,6 @@ def generate_rrr(request):
 
     matric_no = ''
     dept = ''
-    level = ''
     student = None
     app = None
     trans_app = None
