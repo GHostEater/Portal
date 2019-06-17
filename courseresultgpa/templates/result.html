@@ -1,3 +1,4 @@
+{% load static %}
 <h2>{{ gpa.session.session }} Session, {% if gpa.semester is 1 %} 1st Semester {% endif %} {% if gpa.semester is 2 %} 2nd Semester {% endif %} Result And CGPA for {{ gpa.student.user.last_name }}, {{ gpa.student.user.first_name }}</h2>
 <h3>Department: {{ gpa.student.major.dept.name }}</h3>
 <h3>Major: {{ gpa.student.major.name }}</h3>
@@ -37,5 +38,5 @@
     CTCP: {{ gpa.ctcp }}<br>
     CGPA: {{ gpa.cgpa|floatformat:2 }}</h4>
 
-<h3>Fountain University</h3>
-<img src="http://fuo.edu.ng/facilities/img/logo.png">
+<h3>{{ school_name }}</h3>
+src="{% static 'logo.png' %}"

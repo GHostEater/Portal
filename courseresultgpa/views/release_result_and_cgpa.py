@@ -40,7 +40,7 @@ def release_result_and_cgpa(request):
         result = results.filter(student=gpa.student.pk)
 
         template = get_template('result.html')
-        context = {"gpa": gpa, "result": result}
+        context = {"gpa": gpa, "result": result, "school_name": req['school_med_name']}
         content = template.render(context)
 
         message = MailerMessage()

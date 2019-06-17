@@ -10,5 +10,6 @@ urlpatterns = [
     url(r'^application/(?P<pk>[0-9]+)/$', views.ApplicationDetailAPIView.as_view()),
     url(r'^application/single/(?P<email>[A-Za-z0-9_@./#&+-]*)/$', views.ApplicationSingleDetailAPIView.as_view()),
     url(r'^application/new/$', views.ApplicationCreateAPIView.as_view()),
-    url(r'^application/email/$', views.email),
+    url(r'^application/transfer-email/$', views.transfer_email),
+    url(r'^application/postgrad-email/$', views.postgrad_email),
 ]

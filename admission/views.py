@@ -83,7 +83,7 @@ class ApplicationCreateAPIView(CreateAPIView):
 
 
 @api_view(['GET'])
-def email(request):
+def transfer_email(request):
     app = Application.objects.get(pk=request.GET['id'])
     app.url = request.GET['dean_url']
     template = get_template('email_dean.html')
@@ -112,6 +112,76 @@ def email(request):
     message.to_address = app.email_hod
     message.bcc_address = 'transfers@fuo.edu.ng'
     message.from_address = 'transfers@fuo.edu.ng'
+    message.content = ""
+    message.html_content = content
+    message.app = "Fountain University Mailing System"
+    message.save()
+    return Response('ok')
+
+
+@api_view(['GET'])
+def notify_pg(request):
+    req = request.GET
+    app = Application.objects.get(pk=req['id'])
+
+    subject = "Fountain University - Application For Admission"
+
+    message = MailerMessage()
+    message.subject = subject
+    message.to_address = "pgsecretary@fuo.edu.ng"
+    message.from_address = "no_reply@fuo.edu.ng"
+    message.content = app.last_name+", "+app.first_name+' applied for admission, check and review application'
+    message.app = "Fountain University Mailing System"
+    message.save()
+    return Response({})
+
+
+@api_view(['GET'])
+def postgrad_email(request):
+    app = Application.objects.get(pk=request.GET['id'])
+    app.url = request.GET['ref1_url']
+    template = get_template('email_referee.html')
+    context = {'app': app}
+    content = template.render(context)
+    subject = "Fountain University - Referee Request By Student Applying for Admission"
+
+    message = MailerMessage()
+    message.subject = subject
+    message.to_address = app.ref1_email
+    message.bcc_address = 'admissions@fuo.edu.ng'
+    message.from_address = 'admissions@fuo.edu.ng'
+    message.content = ""
+    message.html_content = content
+    message.app = "Fountain University Mailing System"
+    message.save()
+
+    app.url = request.GET['ref2_url']
+    template = get_template('email_referee.html')
+    context = {'app': app}
+    content = template.render(context)
+    subject = "Fountain University - Referee Request By Student Applying for Admission"
+
+    message = MailerMessage()
+    message.subject = subject
+    message.to_address = app.ref1_email
+    message.bcc_address = 'admissions@fuo.edu.ng'
+    message.from_address = 'admissions@fuo.edu.ng'
+    message.content = ""
+    message.html_content = content
+    message.app = "Fountain University Mailing System"
+    message.save()
+
+    app.url = request.GET['ref3_url']
+    template = get_template('email_referee.html')
+    context = {'app': app}
+    content = template.render(context)
+    subject = "Fountain University - Referee Request By Student Applying for Admission"
+
+    message = MailerMessage()
+    message.subject = subject
+    message.to_address = app.ref1_email
+    message.bcc_address = 'admissions@fuo.edu.ng'
+    message.from_address = 'admissions@fuo.edu.ng'
     message.content = ""
     message.html_content = content
     message.app = "Fountain University Mailing System"

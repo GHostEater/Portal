@@ -16,4 +16,4 @@ class Courseware(models.Model):
     uploaded_by = models.ForeignKey(User, null=True, blank=True)
     
     def __str__(self):
-        return str(self.course) + ", " + str(self.info)
+        return u', '.join((self.course.code, self.course.title, self.info.encode('utf-8'))).encode('utf-8').strip()

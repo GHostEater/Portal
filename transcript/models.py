@@ -55,3 +55,6 @@ class Application(models.Model):
     request_type = models.CharField(max_length=255, choices=request_type_choices)
     status = models.IntegerField(default=0)
     date_applied = models.DateTimeField()
+    label = models.FileField(null=True, blank=True)
+    reason_denial = models.TextField(null=True, blank=True)
+    paid = models.BooleanField(default=False)

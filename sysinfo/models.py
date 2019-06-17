@@ -14,5 +14,6 @@ class SysInfo(models.Model):
     slogan = models.CharField(max_length=256)
     receipt_name = models.CharField(max_length=256)
     site = models.CharField(max_length=256)
+    portal_site = models.CharField(max_length=256, null=True, blank=True)
     result_email = models.CharField(max_length=256)
     noreply_email = models.CharField(max_length=256)
