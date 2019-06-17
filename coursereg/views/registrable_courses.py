@@ -12,7 +12,6 @@ from courseresult.models import CourseResult
 from coursetomajor.models import CourseToMajor
 from coursetomajor.serializers import CourseToMajorSerializer
 from coursewaving.models import WavedCourses
-from semester.models import Semester
 
 
 @api_view(['GET'])
@@ -23,20 +22,17 @@ def registrable_courses(request):
     outstandings = []
 
     student = Student.objects.get(pk=req['student'])
-    semester = Semester.objects.get(pk=1)
 
     course_to_major = CourseToMajor.objects.filter(major=student.major,
-                                                   level__level__lte=student.level.level,
-                                                   course__semester=semester.semester)
+                                                   level__level__lte=student.level.level)
     registered_courses = CourseReg.objects.filter(student=student.id,
-                                                  course__semester=semester.semester,
                                                   session=req['session'])
-    result = CourseResult.objects.filter(student=student.id, course__semester=semester.semester)
-    wavings = WavedCourses.objects.filter(student=student.id, course__semester=semester.semester)
+    result = CourseResult.objects.filter(student=student.id)
+    wavings = WavedCourses.objects.filter(student=student.id)
 
-    semester_courses = course_to_major.filter(level=student.level.id)
+    session_courses = course_to_major.filter(level=student.level.id)
 
-    for c in semester_courses:
+    for c in session_courses:
         try:
             wavings.get(course=c.course.id)
             not_in_wavings = False

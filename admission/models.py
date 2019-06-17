@@ -16,6 +16,10 @@ class Application(models.Model):
         ('NECO', 'NECO'),
         ('NABTEB', 'NABTEB'),
         ('A\'Levels', 'A\'Levels'),
+        ('NBAIS', 'NBAIS'),
+        ('GCE \"A\"', 'GCE \"A\"'),
+        ('IJMB', 'IJMB'),
+        ('JUPEB', 'JUPEB'),
     )
     degree_choices = (
         ('IJMB', 'IJMB'),
@@ -23,6 +27,7 @@ class Application(models.Model):
         ('NCE', 'NCE'),
         ('ND', 'ND'),
         ('HND', 'HND'),
+        ('FIRST DEGREE', 'FIRST DEGREE'),
     )
     comp_lit_choices = (
         ('Good', 'Good'),
@@ -43,6 +48,7 @@ class Application(models.Model):
         ('Undergraduate Transfer', 'Undergraduate Transfer'),
         ('Postgraduate', 'Postgraduate'),
         ('JUPEB', 'JUPEB'),
+        ('NBAIS', 'NBAIS'),
     )
     mode_of_entry_choices = (
         ('UTME Candidate', 'UTME Candidate'),
@@ -73,6 +79,7 @@ class Application(models.Model):
     sponsor = models.TextField()
     sponsor_address = models.TextField()
     sponsor_phone = models.CharField(max_length=200)
+    sponsor_email = models.EmailField(max_length=255, null=True, blank=True)
     maiden_name = models.TextField(null=True, blank=True)
     marital_status = models.CharField(max_length=200, null=True, blank=True)
     passport_number = models.CharField(max_length=200, null=True, blank=True)
@@ -103,6 +110,8 @@ class Application(models.Model):
     cert2_date = models.CharField(max_length=200, null=True, blank=True)
     cert2_subject = models.TextField(null=True, blank=True)
     cert2_img = models.ImageField(null=True, blank=True)
+    arabic_cert = models.CharField(max_length=256, null=True, blank=True)
+    arabic_cert_img = models.ImageField(null=True, blank=True)
     degree = models.CharField(max_length=200, choices=degree_choices, null=True, blank=True)
     degree_class = models.CharField(max_length=200, null=True, blank=True)
     degree_img = models.ImageField(null=True, blank=True)
@@ -117,6 +126,18 @@ class Application(models.Model):
     referee = models.TextField(null=True, blank=True)
     referee_address = models.TextField(null=True, blank=True)
     referee_phone = models.CharField(max_length=200, null=True, blank=True)
+    ref1 = models.TextField(null=True, blank=True)
+    ref1_email = models.EmailField(max_length=256, null=True, blank=True)
+    ref1_comment = models.TextField(null=True, blank=True)
+    ref1_signature = models.ImageField(null=True, blank=True)
+    ref2 = models.TextField(null=True, blank=True)
+    ref2_email = models.EmailField(max_length=256, null=True, blank=True)
+    ref2_comment = models.TextField(null=True, blank=True)
+    ref2_signature = models.ImageField(null=True, blank=True)
+    ref3 = models.TextField(null=True, blank=True)
+    ref3_email = models.EmailField(max_length=256, null=True, blank=True)
+    ref3_comment = models.TextField(null=True, blank=True)
+    ref3_signature = models.ImageField(null=True, blank=True)
     session = models.ForeignKey(Session, null=True, blank=True)
     date_applied = models.DateTimeField()
     img = models.ImageField(null=True, blank=True)

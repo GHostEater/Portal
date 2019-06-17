@@ -9,7 +9,7 @@ def cgpa_calculator(results, last, fail, outsanding):
     status = 1
     gp_status = 0
 
-    if results is not None:
+    if results.count() > 0:
         for result in results:
             tnu += float(result.course.unit)
             tcp += float(result.gp) * float(result.course.unit)
@@ -24,8 +24,8 @@ def cgpa_calculator(results, last, fail, outsanding):
 
     if last is not None:
         tce += float(last.tce)
-        ctcp = tcp + float(last.tcp)
-        ctnu = tnu + float(last.tnu)
+        ctcp = tcp + float(last.ctcp)
+        ctnu = tnu + float(last.ctnu)
 
         if ctcp == 0 or ctnu == 0:
             cgpa = 0

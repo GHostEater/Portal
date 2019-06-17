@@ -15,6 +15,9 @@ class Request(models.Model):
     end_date = models.DateTimeField(null=True, blank=True)
     handled_by = models.ForeignKey(User, null=True, blank=True)
 
+    def __str__(self):
+        return str(str(self.lecturer)+" Status:"+str(self.status)+" Start:"+str(self.date)+" End:"+str(self.end_date))
+
 
 class Log(models.Model):
     result = models.ForeignKey(CourseResult)
