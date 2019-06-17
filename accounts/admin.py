@@ -20,6 +20,7 @@ class MyAdminSite(AdminSite):
         site_title = ugettext_lazy("API")
         site_header = ugettext_lazy("API")
         index_title = ugettext_lazy("Administration")
+    t = 1
 
 
 admin_site = MyAdminSite()
