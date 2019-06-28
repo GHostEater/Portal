@@ -25,6 +25,7 @@ def generate_rrr(request):
 
     matric_no = ''
     dept = ''
+    narration = ''
     student = None
     app = None
     trans_app = None
@@ -33,6 +34,8 @@ def generate_rrr(request):
         matric_no = req['matricNo']
     if request.data.get('dept'):
         dept = req['dept']
+    if request.data.get('narration'):
+        narration = req['narration']
 
     if request.data.get('level'):
         level = Level.objects.get(pk=req['level'])
@@ -64,6 +67,7 @@ def generate_rrr(request):
     payment.order_id = req['order_id']
     payment.status = req['status']
     payment.date = req['date']
+    payment.narration = narration
 
     hsh = hashlib.sha512()
     hsh.update(
@@ -96,7 +100,7 @@ def generate_rrr(request):
             },
             {
                 "name": "Purpose of Payment",
-                "value": payment.payment_type.name,
+                "value": payment.payment_type.name + narration,
                 "type": "ALL"
             }
         ]
