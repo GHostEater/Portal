@@ -33,6 +33,7 @@ class Payment(models.Model):
     rrr = models.TextField(null=True, blank=True)
     date = models.DateTimeField(null=True, blank=True)
     status = models.TextField(null=True, blank=True)
+    narration = models.TextField(null=True, blank=True)
     paid = models.BooleanField(default=False)
     amount = models.FloatField(null=True, blank=True)
 
