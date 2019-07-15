@@ -1,7 +1,7 @@
 Django>=1.11.1
 PyMySQL
-djangorestframework==3.6.3
-djangorestframework-jwt==1.10
+djangorestframework>=3.6
+djangorestframework-jwt>=1.10
 django-cors-headers
 django-debug-toolbar
 django-tinymce
