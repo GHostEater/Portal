@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 import datetime
+from decouple import config, Csv
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -21,12 +22,13 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '=3@d0#c)drwg(+ozzu!b72ya&@!2$gisl%g8xd=)4@*2a7!l#s'
+SECRET_KEY = config('SECRET_KEY')
+# SECRET_KEY = '=3@d0#c)drwg(+ozzu!b72ya&@!2$gisl%g8xd=)4@*2a7!l#s'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 
 # Application definition
 
@@ -125,10 +127,10 @@ WSGI_APPLICATION = 'Portal.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'portal',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST'),
         'PORT': '3306',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_ALL_TABLES'"
@@ -202,7 +204,7 @@ MEDIA_URL = '/media/'
 
 MAILQUEUE_QUEUE_UP = True
 
-EMAIL_HOST = 'smtp.mailgun.org'
-EMAIL_PORT = '587'
-EMAIL_HOST_USER = 'postmaster@mg.fuo.edu.ng'
-EMAIL_HOST_PASSWORD = ''
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT', cast=int)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')

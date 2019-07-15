@@ -11,3 +11,4 @@ django-filebrowser
 requests
 Celery
 django-mail-queue
+python-decouple
