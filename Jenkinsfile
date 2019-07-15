@@ -10,8 +10,9 @@ node {
 
         stage 'Test'
             sh 'virtualenv venv --distribute'
-            sh '. venv/bin/activate'
-            sh 'pip install -r requirements.txt'
+            sh '. venv/bin/activate
+                pip install -r requirements.txt'
+            sh ''
 
         stage 'Deploy'
             sh 'python manage.py migrate'
