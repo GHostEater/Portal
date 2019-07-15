@@ -9,10 +9,7 @@ node {
             slackSend color: "warning", message: "Started `${env.JOB_NAME}#${env.BUILD_NUMBER}`\n\n_The changes:_\n${lastChanges}"
 
         stage 'Test'
-            virtualenv venv --distribute
-            . venv/bin/activate
-            pip install -r requirements.txt
-            sh ''
+            sh 'pip install -r requirements.txt'
 
         stage 'Deploy'
             sh 'python manage.py migrate'
