@@ -84,7 +84,7 @@ def generate_rrr(request):
         "payerPhone": req['payerPhone'],
         "description": payment.payment_type.name,
         "customFields": [{
-            "name": "Matric No",
+            "name": "Matriculation Number",
             "value": matric_no,
             "type": "ALL"
         },
@@ -99,8 +99,8 @@ def generate_rrr(request):
                 "type": "ALL"
             },
             {
-                "name": "Purpose of Payment",
-                "value": payment.payment_type.name + narration,
+                "name": "Purpose of payment",
+                "value": payment.payment_type.name + " " + narration,
                 "type": "ALL"
             }
         ]
