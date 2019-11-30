@@ -1,0 +1,10 @@
+version: '3'
+services:
+  django-portal:
+    build: 
+      context: .
+    image: django-portal
+    ports:
+      - 2000:2000
+    volumes:
+      - ./:/usr/app

@@ -23,7 +23,6 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
-# SECRET_KEY = '=3@d0#c)drwg(+ozzu!b72ya&@!2$gisl%g8xd=)4@*2a7!l#s'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', cast=bool)
